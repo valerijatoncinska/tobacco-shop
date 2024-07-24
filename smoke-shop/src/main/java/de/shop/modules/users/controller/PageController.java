@@ -16,6 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PageController {
     @GetMapping("/page")
     public ResponseEntity<ResponseDto<?>> page() {
-return ResponseEntity.ok(new ResponseDto<>(true,"Ты видешь закрытую информацию","ok","ru"));
+        return ResponseEntity.ok(new ResponseDto<>(true, "Ты видешь закрытую информацию", "ok", "ru"));
     }
 }

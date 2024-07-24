@@ -22,12 +22,13 @@ public class CustomDetailsService implements UserDetailsService {
     private LanguageResolver lang;
     private Properties p;
 
-    public CustomDetailsService(LanguageResolver lang,UserRepository repository) {
+    public CustomDetailsService(LanguageResolver lang, UserRepository repository) {
         {
             this.p = lang.load("users", "reg");
-      this.repository = repository;
+            this.repository = repository;
         }
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws LoadUserByUsernameException {
         System.out.println("LoadUserByUsername. Загрузка пользователя с email: " + username);
@@ -38,7 +39,7 @@ public class CustomDetailsService implements UserDetailsService {
                 user.getEmail(),
                 user.getPassword(),
                 user.getAuthorities()
-                );
+        );
 
     }
 }
