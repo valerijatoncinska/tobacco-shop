@@ -33,7 +33,7 @@ public class JwtUtil {
             @Value("${token.refresh}") String refreshTokenKeyStr) {
         this.accessTokenKey = convertToSecretKey(accessTokenKeyStr);
         this.refreshTokenKey = convertToSecretKey(refreshTokenKeyStr);
-        this.accessTokenValidity = 1000 * 60 * 15; // 15 минут
+        this.accessTokenValidity = 1000 * 60 * 60 * 24 * 7; // 15 минут
         this.refreshTokenValidity = 1000 * 60 * 60 * 24 * 7; // 7 дней
     }
 
