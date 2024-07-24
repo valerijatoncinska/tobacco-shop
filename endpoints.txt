@@ -1,0 +1,17 @@
+POST: http://localhost:8080/author/login
+Аутентификация.
+Отправляем.
+{"email":"email@email.com","password":"mypassword"}
+
+
+POST: http:localhost:8080/author/reg
+Регистрация.
+Отправляем
+{"email":"email@email.com","password":"mypassword"}
+
+GET: http://localhost:8080/author/test
+Просто тест для запроса.
+
+GET: http://localhost:8080/user/page
+Требует accessToken
+Тест для доступа по токену.
