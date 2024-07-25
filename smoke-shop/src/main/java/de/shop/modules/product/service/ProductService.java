@@ -9,9 +9,9 @@ public interface ProductService {
 
     ResponseDto<ProductDto> save(ProductDto product);
 
-    ResponseDto<Boolean> deleteById(Long id);
+    ResponseDto<ProductDto> deleteById(Long id);
 
-    ResponseDto<Boolean> restoreById(Long id);
+    ResponseDto<ProductDto> restoreById(Long id);
 
     ResponseDto<ProductDto> update(ProductDto product);
 
