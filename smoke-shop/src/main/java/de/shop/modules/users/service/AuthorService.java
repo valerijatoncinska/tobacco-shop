@@ -12,6 +12,9 @@ import de.shop.modules.users.repository.interfaces.RoleRepository;
 import de.shop.modules.users.repository.interfaces.UserRepository;
 import de.shop.modules.users.service.interfaces.Author;
 import de.shop.modules.users.service.mapping.AuthorMappingService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,6 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
+import java.security.SignatureException;
 import java.util.Properties;
 
 /**
@@ -60,28 +64,30 @@ public class AuthorService implements Author {
      * @throws RefreshTokenException перехвадчик ошибок
      */
     public ResponseDto<?> refresh(InputRefreshTokenDto inputRefreshTokenDto) throws RefreshTokenException {
-        Properties p = lang.load("users", "reg");
-        System.out.println("refresh. входим в сервис");
+        p = lang.load("users", "reg");
         String refreshToken = inputRefreshTokenDto.getRefresh(); // входящий refresh token
-        System.out.println("refresh. к нам пришел токен. " + refreshToken);
-        String username = jwtUtil.extractUsername(refreshToken);
-        System.out.println("Имеем имя: " + username);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        System.out.println("Пользователь: " + userDetails.getUsername());
+        try {
+            String username = jwtUtil.extractUsername(refreshToken);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        // Проверка, действителен ли refresh token
-        if (jwtUtil.validateToken(refreshToken, userDetails)) {
-            System.out.println("ok");
-            String accessToken = jwtUtil.generateAccessToken(userDetails);
-            String newRefreshToken = jwtUtil.generateRefreshToken(userDetails);
-            OutputRefreshTokenDto outputRefreshTokenDto = new OutputRefreshTokenDto();
-            outputRefreshTokenDto.setEmail(userDetails.getUsername());
-            outputRefreshTokenDto.setAccessToken(accessToken);
-            outputRefreshTokenDto.setRefreshToken(newRefreshToken);
-            return new ResponseDto(true, outputRefreshTokenDto, "ok", lang.getCurrentLang());
-        } else {
+            // Проверка, действителен ли refresh token
+            if (jwtUtil.validateToken(refreshToken, userDetails)) {
+                String accessToken = jwtUtil.generateAccessToken(userDetails);
+                String newRefreshToken = jwtUtil.generateRefreshToken(userDetails);
+                OutputRefreshTokenDto outputRefreshTokenDto = new OutputRefreshTokenDto();
+                outputRefreshTokenDto.setEmail(userDetails.getUsername());
+                outputRefreshTokenDto.setAccessToken(accessToken);
+                outputRefreshTokenDto.setRefreshToken(newRefreshToken);
+                return new ResponseDto(true, outputRefreshTokenDto, "ok", lang.getCurrentLang());
+            } else {
+                throw new RefreshTokenException(((String) p.get("not.valid")));
+            }
+        } catch (ExpiredJwtException e){
+            throw new RefreshTokenException(((String) p.get("not.valid")));
+        } catch(MalformedJwtException | UnsupportedJwtException e){
             throw new RefreshTokenException(((String) p.get("not.valid")));
         }
+
 
     }
 
@@ -95,6 +101,7 @@ public class AuthorService implements Author {
      */
     @Override
     public ResponseDto<?> login(InputLoginDto inputLoginDto) throws LoadUserByUsernameException, LoginException {
+        p = lang.load("users","author");
         try {
 
             Authentication authentication = manager.authenticate(
@@ -108,7 +115,7 @@ public class AuthorService implements Author {
             OutputLoginDto outputLogin = new OutputLoginDto(userDetails.getUsername(), accessToken, refreshToken);
             return new ResponseDto<>(true, outputLogin, "ok", lang.getCurrentLang());
         } catch (BadCredentialsException e) {
-            throw new LoginException(e.getMessage());
+            throw new LoginException(((String) p.get("not.found")));
         }
     }
 

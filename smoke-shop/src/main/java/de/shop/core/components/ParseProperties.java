@@ -41,6 +41,7 @@ public class ParseProperties implements ResourceLoaderAware {
             try (InputStream inputStream = resource.getInputStream()) { // загружаем данные
                 try (InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8")) { // читаем данные
                     p.load(reader); // загружаем в Properties
+
                 }
             }
         } catch (IOException e) { // обработка ошибки

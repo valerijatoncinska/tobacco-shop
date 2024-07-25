@@ -1,5 +1,6 @@
 package de.shop.core.components;
 
+import de.shop.core.config.LanguageConfig;
 import de.shop.core.exceptions.ParsePropertiesException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +20,12 @@ public class LanguageResolver {
     @Value("${language.dir}")
     private String languageDir; // каталог для хранения переводов
     private ParseProperties parseProperties; // кастомная обертка для базового класса Properties
-
-    public LanguageResolver(ParseProperties parseProperties) {
-        this.parseProperties = parseProperties;
+private LanguageConfig languageConfig;
+    public LanguageResolver(ParseProperties parseProperties,LanguageConfig languageConfig) {
+        {
+            this.parseProperties = parseProperties;
+            this.languageConfig = languageConfig;
+        }
     }
 
     /**
@@ -35,11 +39,7 @@ public class LanguageResolver {
         if (requestAttributes != null) {
             HttpServletRequest request = requestAttributes.getRequest(); // вызываем инструмент servlet для получения getпараметра в реальном времени
             String lang = request.getParameter("lang"); // получили значение из lang get параметра
-            /* проверка и вывод языка. Если lang пуст, тогда выводим значение по умолчанию.
-            Внимание! Это нужно доработать.
-            В данный момент нет защиты, если придет язык, которого нет.
-            Если нужного языка нет, тогда нужно выводить значение по умолчанию. */
-            return (lang != null && !lang.isEmpty()) ? lang : languageDefault;
+            return (lang != null && !lang.isEmpty() && languageConfig.getData().contains(lang)) ? lang : languageDefault;
         }
         return languageDefault; // возвращаем язык по умолчанию, если запрос недоступен
     }
@@ -53,6 +53,8 @@ public class LanguageResolver {
      * @throws ParsePropertiesException перехват ошибок. Класс лежит в exceptions
      */
     public Properties load(String module, String file) throws ParsePropertiesException {
-        return parseProperties.getProperties(languageDir + "/" + module + "/" + this.getCurrentLang() + "/" + file + ".properties");
+        String path = languageDir + "/" + module + "/" + getCurrentLang() + "/" + file + ".properties";
+
+        return parseProperties.getProperties(path);
     }
 }
