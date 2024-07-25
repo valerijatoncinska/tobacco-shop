@@ -33,8 +33,6 @@ public class ProductDto {
         this.price = price;
     }
 
-
-
     @Override
     public int hashCode() {
         return Objects.hash(id, title, price);
