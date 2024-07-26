@@ -9,6 +9,7 @@ import de.shop.modules.cart.domain.CartEntity;
 import de.shop.modules.customer.domain.CustomerDto;
 import de.shop.modules.customer.domain.CustomerEntity;
 import de.shop.modules.customer.repository.CustomerRepository;
+import de.shop.modules.customer.service.mapping.CustomerMappingService;
 import de.shop.modules.product.domain.dto.ProductDto;
 import de.shop.modules.product.domain.entity.ProductEntity;
 import de.shop.modules.product.repository.interfaces.ProductRepository;
@@ -106,16 +107,16 @@ public class CustomerServiceImpl implements CustomerService {
         return new ResponseDto<>(true, responseDto, "customer_set_not_active", currentLanguage);
     }
 
-    @Override
-    public ResponseDto<CustomerDto> deleteByName(String name) {
-        CustomerEntity entity = repository.findByName(name).orElseThrow(() -> new CustomerNotFoundException(
-                "Customer with name '" + name + "' cannot be found"));
-        entity.setActive(false);
-
-        CustomerDto responseDto = mappingService.mapEntityToDto(entity);
-
-        return new ResponseDto<>(true, responseDto, "customer_set_not_active", currentLanguage);
-    }
+//    @Override
+//    public ResponseDto<CustomerDto> deleteByName(String name) {
+//        CustomerEntity entity = repository.findByName(name).orElseThrow(() -> new CustomerNotFoundException(
+//                "Customer with name '" + name + "' cannot be found"));
+//        entity.setActive(false);
+//
+//        CustomerDto responseDto = mappingService.mapEntityToDto(entity);
+//
+//        return new ResponseDto<>(true, responseDto, "customer_set_not_active", currentLanguage);
+//    }
 
     @Override
     public ResponseDto<CustomerDto> restoreById(Long id) {

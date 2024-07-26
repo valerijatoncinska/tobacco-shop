@@ -3,7 +3,6 @@ package de.shop.modules.cart.domain;
 
 import de.shop.modules.customer.domain.CustomerEntity;
 import de.shop.modules.product.domain.entity.ProductEntity;
-import de.shop.modules.users.domain.entity.UserEntity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

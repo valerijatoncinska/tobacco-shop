@@ -29,17 +29,17 @@ public class ProductController {
     }
 
     @PutMapping("/{id}/restore")
-    public ResponseDto<ProductDto> restoreById(Long id) {
+    public ResponseDto<ProductDto> restoreById(@PathVariable Long id) {
         return service.restoreById(id);
     }
 
-    @PutMapping("/{id}/status")
+    @PutMapping("/modification")
     public ResponseDto<ProductDto> update(ProductDto product) {
         return service.update(product);
     }
 
     @GetMapping
-    public ResponseDto<ProductDto> findById(Long id) {
+    public ResponseDto<ProductDto> findById(@RequestParam Long id) {
         return service.findById(id);
     }
 

@@ -4,79 +4,83 @@ import de.shop.core.components.ResponseDto;
 import de.shop.modules.customer.domain.CustomerDto;
 import de.shop.modules.customer.service.CustomerService;
 import de.shop.modules.product.domain.dto.ProductDto;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-public class CustomerController implements CustomerService {
+@Controller
+@RequestMapping("/customers")
+public class CustomerController {
 
     private final CustomerService service;
 
     public CustomerController(CustomerService service) {
         this.service = service;
     }
-    @Override
-    public ResponseDto<CustomerDto> save(CustomerDto dto) {
-        return null;
+
+    @PostMapping()
+    public ResponseDto<CustomerDto> save(@RequestBody CustomerDto dto) {
+        return service.save(dto);
     }
 
-    @Override
-    public ResponseDto<CustomerDto> getById(Long id) {
-        return null;
+    @GetMapping()
+    public ResponseDto<?> getById(@RequestParam(required = false) Long id
+    ) {
+        if (id == null) {
+            return service.getAllActiveCustomers();
+        } else {
+            return service.getActiveCustomerById(id);
+        }
+
     }
 
-    @Override
-    public ResponseDto<List<CustomerDto>> getAllActiveCustomers() {
-        return null;
+    @PutMapping
+    public ResponseDto<CustomerDto> update(@RequestBody CustomerDto dto) {
+        return service.update(dto);
     }
 
-    @Override
-    public ResponseDto<CustomerDto> getActiveCustomerById(Long id) {
-        return null;
+    @PutMapping("/{id}/status")
+    public ResponseDto<CustomerDto> deleteCustomer(@PathVariable Long id) {
+        return service.deleteById(id);
     }
 
-    @Override
-    public ResponseDto<CustomerDto> update(CustomerDto dto) {
-        return null;
+
+//    public ResponseDto<CustomerDto> deleteByName(@RequestParam String name) {
+//        return null;
+//    }
+
+    @PutMapping("{id}/restoration")
+    public ResponseDto<CustomerDto> restoreById(@PathVariable Long id) {
+        return service.restoreById(id);
     }
 
-    @Override
-    public ResponseDto<CustomerDto> deleteById(Long id) {
-        return null;
-    }
-
-    @Override
-    public ResponseDto<CustomerDto> deleteByName(String name) {
-        return null;
-    }
-
-    @Override
-    public ResponseDto<CustomerDto> restoreById(Long id) {
-        return null;
-    }
-
-    @Override
+    @GetMapping("/count")
     public ResponseDto<Integer> getActiveCustomersNumber() {
-        return null;
+        return service.getActiveCustomersNumber();
     }
 
-    @Override
-    public ResponseDto<BigDecimal> getCartTotalCost(Long customerId) {
+    @GetMapping("/cart-total-cost")
+    public ResponseDto<BigDecimal> getCartTotalCost(@RequestParam Long customerId) {
         return service.getCartTotalCost(customerId);
     }
 
-    @Override
-    public ResponseDto<ProductDto> addProductToCustomersCart(Long customerId, Long productId) {
+    @PutMapping("/{customerId}/cart-product-addition/{productId}")
+    public ResponseDto<ProductDto> addProductToCustomersCart(
+            @PathVariable Long customerId,
+            @PathVariable Long productId) {
         return service.addProductToCustomersCart(customerId, productId);
     }
 
-    @Override
-    public ResponseDto<String> removeProductFromCustomersCart(Long customerId, Long productId) {
+    @DeleteMapping("/{customerId}/cart-product-removal/{productId}")
+    public ResponseDto<String> removeProductFromCustomersCart(
+            @PathVariable Long customerId,
+            @PathVariable Long productId) {
         return service.removeProductFromCustomersCart(customerId, productId);
     }
 
-    @Override
-    public ResponseDto<String> clearCart(Long customerId) {
+    @DeleteMapping("/{customerId}/cart-clearance")
+    public ResponseDto<String> clearCart(@PathVariable Long customerId) {
         return service.clearCart(customerId);
     }
 }

@@ -1,4 +1,4 @@
-package de.shop.modules.customer.service;
+package de.shop.modules.customer.service.mapping;
 
 import de.shop.modules.cart.mapping.CartMappingService;
 import de.shop.modules.customer.domain.CustomerDto;
