@@ -2,9 +2,11 @@ package de.shop.modules.customer.service;
 
 import de.shop.core.components.ResponseDto;
 import de.shop.modules.customer.domain.CustomerDto;
+
 import de.shop.modules.product.domain.dto.ProductDto;
 
 import java.math.BigDecimal;
+
 import java.util.List;
 
 public interface CustomerService {

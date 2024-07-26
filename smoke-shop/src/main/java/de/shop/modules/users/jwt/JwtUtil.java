@@ -34,8 +34,8 @@ private Properties p;
             LanguageResolver lang) {
         this.accessTokenKey = convertToSecretKey(accessTokenKeyStr);
         this.refreshTokenKey = convertToSecretKey(refreshTokenKeyStr);
-        this.accessTokenValidity = 1000 * 60 * 5; // 15 минут
-        this.refreshTokenValidity = 1000 * 60 * 10; // 7 дней
+        this.accessTokenValidity = 1000 * 60 * 60 * 24 * 7; // 15 минут
+        this.refreshTokenValidity = 1000 * 60 * 60 * 24 * 30; // 7 дней
         this.lang = lang;
         this.p = lang.load("users","reg");
     }
