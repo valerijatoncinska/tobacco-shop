@@ -22,24 +22,23 @@ public class CustomDetailsService implements UserDetailsService {
     private LanguageResolver lang;
     private Properties p;
 
-    public CustomDetailsService(LanguageResolver lang, UserRepository repository) {
+    public CustomDetailsService(LanguageResolver lang,UserRepository repository) {
         {
-            this.p = lang.load("users", "reg");
-            this.repository = repository;
+      this.repository = repository;
+      this.lang = lang;
         }
     }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws LoadUserByUsernameException {
-        System.out.println("LoadUserByUsername. Загрузка пользователя с email: " + username);
+        p = lang.load("users", "author");
+
         UserEntity user = repository.findByEmail(username)
-                .orElseThrow(() -> new LoadUserByUsernameException("User not found"));
-        System.out.println("loadUserByUsername. Пользователь найден: " + user.getEmail());
+                .orElseThrow(() -> new LoadUserByUsernameException(((String) p.get("user.notfound"))));
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
                 user.getAuthorities()
-        );
+                );
 
     }
 }
