@@ -4,12 +4,18 @@ import de.shop.core.components.LanguageResolver;
 import de.shop.core.components.ResponseDto;
 import de.shop.core.exceptions.CustomerInactiveException;
 import de.shop.core.exceptions.CustomerNotFoundException;
+import de.shop.core.exceptions.ProductNotFoundException;
 import de.shop.modules.cart.domain.CartEntity;
 import de.shop.modules.customer.domain.CustomerDto;
 import de.shop.modules.customer.domain.CustomerEntity;
 import de.shop.modules.customer.repository.CustomerRepository;
+import de.shop.modules.product.domain.dto.ProductDto;
+import de.shop.modules.product.domain.entity.ProductEntity;
+import de.shop.modules.product.repository.interfaces.ProductRepository;
+import de.shop.modules.product.service.mapping.ProductMappingService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Properties;
 
@@ -18,13 +24,17 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository repository;
     private final CustomerMappingService mappingService;
+    private final ProductRepository productRepository;
+    private final ProductMappingService productMappingService;
     private Properties p;
     private final LanguageResolver lang;
     private String currentLanguage;
 
-    public CustomerServiceImpl(CustomerRepository repository, CustomerMappingService mappingService, LanguageResolver lang) {
+    public CustomerServiceImpl(CustomerRepository repository, CustomerMappingService mappingService, ProductRepository productRepository, ProductMappingService productMappingService, LanguageResolver lang) {
         this.repository = repository;
         this.mappingService = mappingService;
+        this.productRepository = productRepository;
+        this.productMappingService = productMappingService;
         this.lang = lang;
         this.p = lang.load("customer", "messages");
         this.currentLanguage = lang.getCurrentLang();
@@ -124,28 +134,47 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ResponseDto<CustomerDto> getCartTotalCost(Long customerId) {
-        return null;
+    public ResponseDto<BigDecimal> getCartTotalCost(Long customerId) {
+
+        CustomerEntity customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id %d not found", customerId)));
+        BigDecimal cartTotalCost = customer.getCart().getCartTotalCost();
+
+        return new ResponseDto<>(true, cartTotalCost, "cart_total_cost", currentLanguage);
+    }
+
+
+    @Override
+    public ResponseDto<ProductDto> addProductToCustomersCart(Long customerId, Long productId) {
+
+        CustomerEntity customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id %d not found", customerId)));
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(String.format("Product with id %d not found", productId)));
+        customer.getCart().addProduct(productEntity);
+        ProductDto productDto = productMappingService.mapEntityToDto(productEntity);
+
+        return new ResponseDto<>(true, productDto, "add_product_to_cart", currentLanguage);
     }
 
     @Override
-    public ResponseDto<CustomerDto> getAverageProductCost(Long customerId) {
-        return null;
+    public ResponseDto<String> removeProductFromCustomersCart(Long customerId, Long productId) {
+
+        CustomerEntity customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id %d not found", customerId)));
+        customer.getCart().removeProductById(productId);
+
+        String confirmation = String.format("Product with id %d is deleted", productId);
+
+        return new ResponseDto<>(true, confirmation, "remove_product_from_cart", currentLanguage);
     }
 
     @Override
-    public ResponseDto<CustomerDto> addProductToCustomersCart(Long customerId, Long productId) {
-        return null;
-    }
+    public ResponseDto<String> clearCart(Long customerId) {
 
-    @Override
-    public ResponseDto<Boolean> removeProductFromCustomersCart(Long customerId, Long productId) {
-        return null;
-    }
+        CustomerEntity customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id %d not found", customerId)));
+        customer.getCart().deleteAllProducts();
 
-    @Override
-    public ResponseDto<CustomerDto> clearCart(Long customerId) {
-        return null;
+        String confirmation = String.format("All products from user with id %d cart are deleted", customerId);
+
+
+        return new ResponseDto<>(true, confirmation, "clear_cart", currentLanguage);
     }
 
 }

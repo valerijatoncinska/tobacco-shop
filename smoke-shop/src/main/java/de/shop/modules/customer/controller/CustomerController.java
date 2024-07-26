@@ -3,10 +3,19 @@ package de.shop.modules.customer.controller;
 import de.shop.core.components.ResponseDto;
 import de.shop.modules.customer.domain.CustomerDto;
 import de.shop.modules.customer.service.CustomerService;
+import de.shop.modules.product.domain.dto.ProductDto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class CustomerController implements CustomerService {
+
+    private final CustomerService service;
+
+    public CustomerController(CustomerService service) {
+        this.service = service;
+    }
+
     @Override
     public ResponseDto<CustomerDto> save(CustomerDto dto) {
         return null;
@@ -53,27 +62,22 @@ public class CustomerController implements CustomerService {
     }
 
     @Override
-    public ResponseDto<CustomerDto> getCartTotalCost(Long customerId) {
-        return null;
+    public ResponseDto<BigDecimal> getCartTotalCost(Long customerId) {
+        return service.getCartTotalCost(customerId);
     }
 
     @Override
-    public ResponseDto<CustomerDto> getAverageProductCost(Long customerId) {
-        return null;
+    public ResponseDto<ProductDto> addProductToCustomersCart(Long customerId, Long productId) {
+        return service.addProductToCustomersCart(customerId, productId);
     }
 
     @Override
-    public ResponseDto<CustomerDto> addProductToCustomersCart(Long customerId, Long productId) {
-        return null;
+    public ResponseDto<String> removeProductFromCustomersCart(Long customerId, Long productId) {
+        return service.removeProductFromCustomersCart(customerId, productId);
     }
 
     @Override
-    public ResponseDto<Boolean> removeProductFromCustomersCart(Long customerId, Long productId) {
-        return null;
-    }
-
-    @Override
-    public ResponseDto<CustomerDto> clearCart(Long customerId) {
-        return null;
+    public ResponseDto<String> clearCart(Long customerId) {
+        return service.clearCart(customerId);
     }
 }
