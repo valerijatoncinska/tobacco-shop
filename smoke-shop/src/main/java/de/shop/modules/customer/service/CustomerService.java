@@ -3,6 +3,10 @@ package de.shop.modules.customer.service;
 import de.shop.core.components.ResponseDto;
 import de.shop.modules.customer.domain.CustomerDto;
 
+import de.shop.modules.product.domain.dto.ProductDto;
+
+import java.math.BigDecimal;
+
 import java.util.List;
 
 public interface CustomerService {
@@ -15,9 +19,8 @@ public interface CustomerService {
     ResponseDto<CustomerDto> deleteByName(String name);
     ResponseDto<CustomerDto> restoreById(Long id);
     ResponseDto<Integer> getActiveCustomersNumber();
-    ResponseDto<CustomerDto> getCartTotalCost(Long customerId);
-    ResponseDto<CustomerDto> getAverageProductCost(Long customerId);
-    ResponseDto<CustomerDto> addProductToCustomersCart(Long customerId, Long productId);
-    ResponseDto<Boolean> removeProductFromCustomersCart(Long customerId, Long productId);
-    ResponseDto<CustomerDto> clearCart(Long customerId);
+    ResponseDto<BigDecimal> getCartTotalCost(Long customerId);
+    ResponseDto<ProductDto> addProductToCustomersCart(Long customerId, Long productId);
+    ResponseDto<String> removeProductFromCustomersCart(Long customerId, Long productId);
+    ResponseDto<String> clearCart(Long customerId);
 }

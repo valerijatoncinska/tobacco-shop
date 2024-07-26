@@ -70,4 +70,23 @@ public class CartEntity {
     public String toString() {
         return String.format("Cart with id - %d, has %d products", id, products != null ? products.size() : 0);
     }
+
+    public void addProduct(ProductEntity product) {
+        if (product.isActive()) {
+            products.add(product);
+        }
+    }
+    public BigDecimal getCartTotalCost() {
+        return products.stream().filter(ProductEntity::isActive).map(ProductEntity::getPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+    }
+    public List<ProductEntity> getAllActiveProducts(Long cartId) {
+        return products.stream().filter(ProductEntity::isActive).toList();
+    }
+    public void removeProductById(Long productId) {
+
+        products.removeIf(product -> product.getId().equals(productId));
+    }
+    public void deleteAllProducts() {
+        products.clear();
+    }
 }
