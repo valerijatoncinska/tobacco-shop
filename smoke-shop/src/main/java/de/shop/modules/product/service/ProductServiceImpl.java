@@ -2,13 +2,15 @@ package de.shop.modules.product.service;
 
 import de.shop.core.components.LanguageResolver;
 import de.shop.core.components.ResponseDto;
+import de.shop.core.exceptions.CustomerNotFoundException;
+import de.shop.core.exceptions.ProductNotFoundException;
 import de.shop.modules.product.domain.dto.ProductDto;
 import de.shop.modules.product.domain.entity.ProductEntity;
 import de.shop.modules.product.repository.interfaces.ProductRepository;
 import de.shop.modules.product.service.mapping.ProductMappingService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Properties;
 
@@ -17,95 +19,87 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository repository;
     private final ProductMappingService mappingService;
+    private Properties p;
     private final LanguageResolver lang;
+    private String currentLanguage;
 
     public ProductServiceImpl(ProductRepository repository, ProductMappingService mappingService, LanguageResolver lang) {
         this.repository = repository;
         this.mappingService = mappingService;
         this.lang = lang;
+        this.p = lang.load("product", "messages");
+        this.currentLanguage = lang.getCurrentLang();
     }
 
     @Override
     public ResponseDto<ProductDto> save(ProductDto product) {
-        Properties p = lang.load("product", "messages.properties");
         ProductEntity entity = mappingService.mapDtoToEntity(product);
 
         try {
             repository.save(entity);
         } catch (Exception e) {
-            return new ResponseDto<>(false, null, p.get("product_not_saved").toString(), lang.getCurrentLang());
+            return new ResponseDto<>(false, product, "product_not_saved", currentLanguage);
         }
         mappingService.mapEntityToDto(entity);
-        return new ResponseDto<>(true, product, p.get("product_saved").toString(), lang.getCurrentLang());
+        return new ResponseDto<>(true, product, "product_saved", currentLanguage);
     }
 
     @Override
     public ResponseDto<ProductDto> deleteById(Long id) {
-        Properties p = lang.load("product", "messages.properties");
         ProductDto dto = findById(id).getData();
-        if (dto == null) {
-            return new ResponseDto<>(false, null, p.get("product_not_found_by_id").toString(), lang.getCurrentLang());
-        }
         ProductEntity entity = mappingService.mapDtoToEntity(dto);
         entity.setActive(false);
         dto = mappingService.mapEntityToDto(entity);
 
-        return new ResponseDto<>(true, dto, p.get("product_deleted").toString(), lang.getCurrentLang());
+        return new ResponseDto<>(true, dto, "product_deleted", currentLanguage);
     }
 
     @Override
     public ResponseDto<ProductDto> restoreById(Long id) {
-        Properties p = lang.load("product", "messages.properties");
         ProductDto dto = findById(id).getData();
-        if (dto == null) {
-            return new ResponseDto<>(false, null, p.get("product_not_found_by_id").toString(), lang.getCurrentLang());
-        }
+
         ProductEntity entity = mappingService.mapDtoToEntity(dto);
         entity.setActive(true);
         dto = mappingService.mapEntityToDto(entity);
 
-        return new ResponseDto<>(true, dto, p.get("product_restored").toString(), lang.getCurrentLang());
+        return new ResponseDto<>(true, dto, p.get("product_restored").toString(), currentLanguage);
     }
 
     @Override
     public ResponseDto<ProductDto> update(ProductDto productDto) {
-        Properties p = lang.load("product", "messages.properties");
-        ProductEntity entity = mappingService.mapDtoToEntity(productDto);
-
 
         Long id = productDto.getId();
         ProductDto dto = findById(id).getData();
-        if (dto == null) {
-            return new ResponseDto<>(false, null, p.get("product_not_found_by_id").toString(), lang.getCurrentLang());
-        }
-        entity.setTitle(productDto.getTitle());
-        entity.setPrice(productDto.getPrice());
+        ProductEntity entity = mappingService.mapDtoToEntity(productDto);
+
+        entity.setTitle(dto.getTitle());
+        entity.setPrice(dto.getPrice());
 
         ProductDto newProduct = mappingService.mapEntityToDto(entity);
-        return new ResponseDto<>(true, newProduct, p.get("product_updated").toString(), lang.getCurrentLang());
+        return new ResponseDto<>(true, newProduct, "product_updated", currentLanguage);
     }
 
     @Override
     public ResponseDto<ProductDto> findById(Long id) {
-        Properties p = lang.load("product", "messages.properties");
-        ProductEntity product = repository.findById(id).orElse(null);
-        if (product == null || !product.isActive()) {
-            return new ResponseDto<>(false, null, p.get("product_not_found_by_id").toString(), lang.getCurrentLang());
-        } else {
-            ProductDto dto = mappingService.mapEntityToDto(product);
-            return new ResponseDto<>(true, dto, p.get("product_found").toString(), lang.getCurrentLang());
+
+        ProductEntity entity = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(
+                "Product with id " + id + "cannot be found"));
+        if (!entity.isActive()) {
+            return new ResponseDto<>(false, mappingService.mapEntityToDto(entity),
+                    "product_is_inactive", currentLanguage);
         }
+        ProductDto dto = mappingService.mapEntityToDto(entity);
+        return new ResponseDto<>(true, dto, "product_found", currentLanguage);
     }
 
     @Override
     public ResponseDto<List<ProductDto>> findAllActiveProducts() {
-        Properties p = lang.load("product", "messages.properties");
         List<ProductDto> foundProducts = repository.findAll()
                 .stream()
                 .filter(ProductEntity::isActive)
                 .map(mappingService::mapEntityToDto)
                 .toList();
-        return new ResponseDto<>(true, foundProducts, p.get("all_product_found").toString(), lang.getCurrentLang());
+        return new ResponseDto<>(true, foundProducts, "all_product_found", currentLanguage);
     }
 
 }
