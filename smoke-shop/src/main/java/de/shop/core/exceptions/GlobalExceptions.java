@@ -20,6 +20,13 @@ public class GlobalExceptions {
         this.lang = lang;
     }
 
+    @ExceptionHandler(JwtUtilException.class)
+    public ResponseEntity<ResponseDto<?>> jwtUtilException(JwtUtilException e) {
+        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "401 - UNAUTHORIZED", lang.getCurrentLang());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resp);
+    }
+
+
     @ExceptionHandler(RefreshTokenException.class)
     public ResponseEntity<ResponseDto<?>> refreshTokenException(RefreshTokenException e) {
         ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "401 - UNAUTHORIZED", lang.getCurrentLang());
@@ -28,8 +35,8 @@ public class GlobalExceptions {
 
     @ExceptionHandler(LoginException.class)
     public ResponseEntity<ResponseDto<?>> loginException(LoginException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "401 - UNAUTHORIZED", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resp);
+        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "404 - NOT FOUND", lang.getCurrentLang());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
     }
 
     @ExceptionHandler(RegException.class)
@@ -52,8 +59,8 @@ public class GlobalExceptions {
 
     @ExceptionHandler(LoadUserByUsernameException.class)
     public ResponseEntity<ResponseDto<?>> loadUserByUsernameException(LoadUserByUsernameException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "401 Unauthorized", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resp);
+        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "404 - Not found", lang.getCurrentLang());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

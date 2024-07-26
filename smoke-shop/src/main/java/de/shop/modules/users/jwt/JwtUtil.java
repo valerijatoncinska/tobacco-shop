@@ -1,5 +1,7 @@
 package de.shop.modules.users.jwt;
 
+import de.shop.core.components.LanguageResolver;
+import de.shop.core.exceptions.JwtUtilException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,10 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,14 +26,18 @@ public class JwtUtil {
     private final SecretKey refreshTokenKey;
     private final long accessTokenValidity;
     private final long refreshTokenValidity;
-
+private LanguageResolver lang;
+private Properties p;
     public JwtUtil(
             @Value("${token.access}") String accessTokenKeyStr,
-            @Value("${token.refresh}") String refreshTokenKeyStr) {
+            @Value("${token.refresh}") String refreshTokenKeyStr,
+            LanguageResolver lang) {
         this.accessTokenKey = convertToSecretKey(accessTokenKeyStr);
         this.refreshTokenKey = convertToSecretKey(refreshTokenKeyStr);
-        this.accessTokenValidity = 1000 * 60 * 60 * 24 * 7; // 15 минут
-        this.refreshTokenValidity = 1000 * 60 * 60 * 24 * 7; // 7 дней
+        this.accessTokenValidity = 1000 * 60 * 5; // 15 минут
+        this.refreshTokenValidity = 1000 * 60 * 10; // 7 дней
+        this.lang = lang;
+        this.p = lang.load("users","reg");
     }
 
     private SecretKey convertToSecretKey(String keyStr) {
@@ -55,12 +58,16 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token, SecretKey key) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    private Claims extractAllClaims(String token, SecretKey key) throws JwtUtilException {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (io.jsonwebtoken.io.DecodingException e) {
+            throw new JwtUtilException(((String) p.get("not.valid")));
+        }
     }
 
     private boolean isTokenExpired(String token) {
@@ -95,10 +102,14 @@ public class JwtUtil {
                 .compact();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        SecretKey key = getSigningKey(token);
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public boolean validateToken(String token, UserDetails userDetails) throws JwtUtilException {
+        try {
+            SecretKey key = getSigningKey(token);
+            final String username = extractUsername(token);
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (Exception e) {
+            throw new JwtUtilException(((String) p.get("not.valid")));
+        }
     }
 
     private SecretKey getSigningKey(String token) {
@@ -112,8 +123,14 @@ public class JwtUtil {
     }
 
     private boolean isAccessToken(String token) {
-        Claims claims = extractAllClaims(token, accessTokenKey);
-        return "access".equals(claims.get("tokenType"));
+        try {
+            Claims claims = extractAllClaims(token, accessTokenKey);
+            return "access".equals(claims.get("tokenType"));
+        } catch (Exception e) {
+            return false;
+        }
+
+
     }
 
     private boolean isRefreshToken(String token) {
