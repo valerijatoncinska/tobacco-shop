@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+@Entity
 @Table(name = "address")
 public class AddressEntity {
     @Id
@@ -16,13 +17,10 @@ public class AddressEntity {
     @JoinColumn(name = "customer_id")
     private CustomerEntity customer;
 
-    @Column(name = "region")
-    private String region;
-
     @Column(name = "street")
     private String street;
 
-    @Column(name = "id")
+    @Column(name = "city")
     private String city;
 
     @Column(name = "house_number")
@@ -45,14 +43,6 @@ public class AddressEntity {
 
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
     }
 
     public String getStreet() {
@@ -92,12 +82,12 @@ public class AddressEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AddressEntity that = (AddressEntity) o;
-        return houseNumber == that.houseNumber && Objects.equals(id, that.id) && Objects.equals(customer, that.customer) && Objects.equals(region, that.region) && Objects.equals(street, that.street) && Objects.equals(city, that.city) && Objects.equals(postalCode, that.postalCode);
+        return houseNumber == that.houseNumber && Objects.equals(id, that.id) && Objects.equals(customer, that.customer) && Objects.equals(street, that.street) && Objects.equals(city, that.city) && Objects.equals(postalCode, that.postalCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customer, region, street, city, houseNumber, postalCode);
+        return Objects.hash(id, customer, street, city, houseNumber, postalCode);
     }
 
     @Override
@@ -105,7 +95,6 @@ public class AddressEntity {
         return "Address{" +
                 "id=" + id +
                 ", customer=" + customer +
-                ", region='" + region + '\'' +
                 ", street='" + street + '\'' +
                 ", city='" + city + '\'' +
                 ", houseNumber=" + houseNumber +

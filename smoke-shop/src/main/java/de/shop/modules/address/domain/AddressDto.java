@@ -1,16 +1,12 @@
 package de.shop.modules.address.domain;
 
-import de.shop.modules.customer.domain.CustomerEntity;
 import jakarta.persistence.*;
 
 import java.util.Objects;
 
-@Table(name = "address")
 public class AddressDto {
 
     private Long id;
-
-    private String region;
 
     private String city;
 
@@ -26,14 +22,6 @@ public class AddressDto {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
     }
 
     public String getStreet() {
@@ -73,21 +61,20 @@ public class AddressDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AddressDto that = (AddressDto) o;
-        return houseNumber == that.houseNumber && Objects.equals(id, that.id) && Objects.equals(region, that.region) && Objects.equals(street, that.street) && Objects.equals(city, that.city) && Objects.equals(postalCode, that.postalCode);
+        return houseNumber == that.houseNumber && Objects.equals(id, that.id) && Objects.equals(city, that.city) && Objects.equals(street, that.street) && Objects.equals(postalCode, that.postalCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, region, street, city, houseNumber, postalCode);
+        return Objects.hash(id, city, street, houseNumber, postalCode);
     }
 
     @Override
     public String toString() {
         return "AddressDto{" +
                 "id=" + id +
-                ", region='" + region + '\'' +
-                ", street='" + street + '\'' +
                 ", city='" + city + '\'' +
+                ", street='" + street + '\'' +
                 ", houseNumber=" + houseNumber +
                 ", postalCode='" + postalCode + '\'' +
                 '}';

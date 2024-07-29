@@ -14,6 +14,7 @@ import de.shop.modules.product.domain.dto.ProductDto;
 import de.shop.modules.product.domain.entity.ProductEntity;
 import de.shop.modules.product.repository.interfaces.ProductRepository;
 import de.shop.modules.product.service.mapping.ProductMappingService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -27,17 +28,15 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerMappingService mappingService;
     private final ProductRepository productRepository;
     private final ProductMappingService productMappingService;
-    private Properties p;
-    private final LanguageResolver lang;
-    private String currentLanguage;
+    private final String currentLanguage;
 
+    @Autowired
     public CustomerServiceImpl(CustomerRepository repository, CustomerMappingService mappingService, ProductRepository productRepository, ProductMappingService productMappingService, LanguageResolver lang) {
         this.repository = repository;
         this.mappingService = mappingService;
         this.productRepository = productRepository;
         this.productMappingService = productMappingService;
-        this.lang = lang;
-        this.p = lang.load("customer", "messages");
+        Properties p = lang.load("customers", "messages");
         this.currentLanguage = lang.getCurrentLang();
     }
 

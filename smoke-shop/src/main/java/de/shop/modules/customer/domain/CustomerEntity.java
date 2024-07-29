@@ -1,5 +1,6 @@
 package de.shop.modules.customer.domain;
 
+import de.shop.modules.address.domain.AddressEntity;
 import de.shop.modules.cart.domain.CartEntity;
 import jakarta.persistence.*;
 
@@ -22,6 +23,9 @@ public class CustomerEntity {
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private CartEntity cart;
+
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private AddressEntity address;
 
     public CartEntity getCart() {
         return cart;
@@ -55,17 +59,25 @@ public class CustomerEntity {
         this.active = active;
     }
 
+    public AddressEntity getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressEntity address) {
+        this.address = address;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CustomerEntity that = (CustomerEntity) o;
-        return active == that.active && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(cart, that.cart);
+        CustomerEntity entity = (CustomerEntity) o;
+        return active == entity.active && Objects.equals(id, entity.id) && Objects.equals(name, entity.name) && Objects.equals(cart, entity.cart) && Objects.equals(address, entity.address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, active, cart);
+        return Objects.hash(id, name, active, cart, address);
     }
 
     @Override
@@ -75,6 +87,7 @@ public class CustomerEntity {
                 ", name='" + name + '\'' +
                 ", active=" + active +
                 ", cart=" + cart +
+                ", address=" + address +
                 '}';
     }
 }

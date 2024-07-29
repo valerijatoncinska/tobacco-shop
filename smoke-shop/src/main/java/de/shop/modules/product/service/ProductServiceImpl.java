@@ -20,13 +20,11 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
     private final ProductMappingService mappingService;
     private Properties p;
-    private final LanguageResolver lang;
     private String currentLanguage;
 
     public ProductServiceImpl(ProductRepository repository, ProductMappingService mappingService, LanguageResolver lang) {
         this.repository = repository;
         this.mappingService = mappingService;
-        this.lang = lang;
         this.p = lang.load("product", "messages");
         this.currentLanguage = lang.getCurrentLang();
     }
@@ -62,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
         entity.setActive(true);
         dto = mappingService.mapEntityToDto(entity);
 
-        return new ResponseDto<>(true, dto, p.get("product_restored").toString(), currentLanguage);
+        return new ResponseDto<>(true, dto, "product_restored", currentLanguage);
     }
 
     @Override
@@ -82,8 +80,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseDto<ProductDto> findById(Long id) {
 
-        ProductEntity entity = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(
-                "Product with id " + id + "cannot be found"));
+        ProductEntity entity = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(((String) p.get("product_not_found_by_id"))));
         if (!entity.isActive()) {
             return new ResponseDto<>(false, mappingService.mapEntityToDto(entity),
                     "product_is_inactive", currentLanguage);

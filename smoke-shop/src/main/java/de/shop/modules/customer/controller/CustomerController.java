@@ -4,12 +4,11 @@ import de.shop.core.components.ResponseDto;
 import de.shop.modules.customer.domain.CustomerDto;
 import de.shop.modules.customer.service.CustomerService;
 import de.shop.modules.product.domain.dto.ProductDto;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
-@Controller
+@RestController
 @RequestMapping("/customers")
 public class CustomerController {
 
