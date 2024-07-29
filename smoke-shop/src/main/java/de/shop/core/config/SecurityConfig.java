@@ -73,6 +73,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/author/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/author/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/**").hasAuthority("ROLE_USER")
+                        .requestMatchers(HttpMethod.GET,"/email/**").permitAll()
                         .anyRequest().authenticated()
                 );
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
