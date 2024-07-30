@@ -14,5 +14,4 @@ public interface ProductMappingService {
 
     ProductDto mapEntityToDto(ProductEntity entity);
 
-
 }
