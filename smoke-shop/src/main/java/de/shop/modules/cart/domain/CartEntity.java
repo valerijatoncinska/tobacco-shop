@@ -1,8 +1,8 @@
 package de.shop.modules.cart.domain;
 
 
+import de.shop.modules.customer.domain.CustomerEntity;
 import de.shop.modules.product.domain.entity.ProductEntity;
-import de.shop.modules.users.domain.entity.UserEntity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -20,7 +20,7 @@ public class CartEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private CustomerEntity customer;
 
     @ManyToMany
     @JoinTable(name = "cart_product",
@@ -36,12 +36,12 @@ public class CartEntity {
         this.id = id;
     }
 
-    public UserEntity getUser() {
-        return user;
+    public CustomerEntity getCustomer() {
+        return customer;
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
     }
 
     public List<ProductEntity> getProducts() {
@@ -57,16 +57,35 @@ public class CartEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartEntity that = (CartEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(user, that.user) && Objects.equals(products, that.products);
+        return Objects.equals(id, that.id) && Objects.equals(customer, that.customer) && Objects.equals(products, that.products);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, products);
+        return Objects.hash(id, customer, products);
     }
 
     @Override
     public String toString() {
         return String.format("Cart with id - %d, has %d products", id, products != null ? products.size() : 0);
+    }
+
+    public void addProduct(ProductEntity product) {
+        if (product.isActive()) {
+            products.add(product);
+        }
+    }
+    public BigDecimal getCartTotalCost() {
+        return products.stream().filter(ProductEntity::isActive).map(ProductEntity::getPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+    }
+    public List<ProductEntity> getAllActiveProducts(Long cartId) {
+        return products.stream().filter(ProductEntity::isActive).toList();
+    }
+    public void removeProductById(Long productId) {
+
+        products.removeIf(product -> product.getId().equals(productId));
+    }
+    public void deleteAllProducts() {
+        products.clear();
     }
 }

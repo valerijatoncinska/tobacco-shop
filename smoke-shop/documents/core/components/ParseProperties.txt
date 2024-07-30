@@ -1,0 +1,7 @@
+date: 29.07.2024
+Author: Artem Dainov
+email: artem-dainov@bk.ru
+
+Класс, ParseProperties, является оберткой для класса Properties.
+Его использует класс LanguageResolver.
+Однако, его можно просто использовать в своем проекте.

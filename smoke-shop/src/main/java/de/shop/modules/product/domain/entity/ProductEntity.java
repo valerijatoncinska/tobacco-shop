@@ -41,6 +41,7 @@ public class ProductEntity {
     @Column(name = "active")
     private boolean active;
 
+    @Min(0)
     @Column(name = "quantity")
     private int quantity;
 

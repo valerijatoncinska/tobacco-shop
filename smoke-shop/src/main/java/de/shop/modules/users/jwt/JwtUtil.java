@@ -1,5 +1,5 @@
 package de.shop.modules.users.jwt;
-
+/* Время: 26.07.2024 09:00 | Artem */
 import de.shop.core.components.LanguageResolver;
 import de.shop.core.exceptions.JwtUtilException;
 import io.jsonwebtoken.Claims;
