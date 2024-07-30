@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptions {
     private LanguageResolver lang; // класс мультиязычности
+    @ExceptionHandler(EmailServiceException.class)
+    public ResponseEntity<ResponseDto<?>> emailServiceException(EmailServiceException e) {
+        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "503 - SERVICE UNAVAILABLE", lang.getCurrentLang());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(resp);
+    }
 
     public GlobalExceptions(LanguageResolver lang) {
         this.lang = lang;

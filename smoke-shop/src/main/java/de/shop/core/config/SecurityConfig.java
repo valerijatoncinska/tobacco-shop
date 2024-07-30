@@ -1,4 +1,4 @@
-package de.shop.core.config;
+package de.shop.config;
 
 import de.shop.modules.users.jwt.JwtRequestFilter;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -7,13 +7,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.http.UserDetailsServiceFactoryBean;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -36,7 +38,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    /*
+    /**
      * Метод, для swagger
      */
 
@@ -61,25 +63,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(x -> x
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x -> x
-//                        .requestMatchers("/swagger-ui.html", "/v3/api-docs/", "/swagger-ui/").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/products/all").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/author/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/author/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/user/**").hasAuthority("ROLE_USER")
-//
-//                        .anyRequest().authenticated()
-                                .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products/all").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/author/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/author/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/**").hasAuthority("ROLE_USER")
+                        .requestMatchers(HttpMethod.GET,"/email/**").permitAll()
+                        .anyRequest().authenticated()
                 );
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
+
     }
+
 
 }

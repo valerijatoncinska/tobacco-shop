@@ -1,0 +1,105 @@
+Date: 29.07.2024
+Author: Artem Dainov
+Email: artem-dainov@bk.ru
+=============== EmailService - Сервис отправки электронных писем ===============
+Добро пожаловать в документ, который описывает, как работать с EmailService.
+Для начала давайте познакомимся с тем, какие настройки нужны для сервиса. Заглянем в файл `application.properties`.
+Вот настройки для отправки писем с вашей почты:
+properties
+Копировать код
+# Настройки для отправки электронных писем
+# Хост
+spring.mail.host=smtp.gmail.com
+# Порт
+spring.mail.port=587
+# Email, от лица которого будет производиться отправка писем
+spring.mail.username=my-account@gmail.com
+# Пароль приложения. Внимание! Пароль не от вашего аккаунта, а от приложения, созданного в аккаунте
+spring.mail.password=****
+
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+Эти настройки необходимы для корректной отправки писем.
+Далее настройки для самого EmailService:
+properties
+Копировать код
+# Настройки для EmailService
+# Адрес, где находится физический магазин или куда нужно отправлять письма
+spring.email_service.address=Markstrasse 58, 11111 Stadt
+# Email, куда могут обратиться за помощью
+spring.email_service.contact_email=support@tobacco-shop.de
+# Телефон, куда могут позвонить клиенты
+spring.email_service.contact_tel=+49xxxxxxxxxxx
+# Время работы
+spring.email_service.work_time=09:00 - 21:00
+# Режим отправки
+spring.email_service.send_mode=network
+Адрес, контактный email, телефон и время работы нужны для вставки их во все отправляемые письма — так называемая подпись.
+Режим отправки:
+properties
+Копировать код
+spring.email_service.send_mode=local/network
+Этот параметр указывает, как поступать с письмом. Если указано `network`, письмо будет отправлено в сеть и доставлено на указанный электронный адрес. Если указано `local`, письмо будет сохранено в каталог с тестовыми письмами, в корневой директории `/email/*.eml`. Эта директория создается автоматически и должна быть удалена перед тем, как проект будет загружен на GitHub. Чтобы открыть файлы `.eml`, можно воспользоваться почтовым клиентом, например, Mozilla Thunderbird.
+Как создать пароль приложения:
+Рассмотрим аккаунт Google:
+1. Войдите в ваш аккаунт.
+2. Перейдите в раздел "Безопасность".
+3. Убедитесь, что у вас включена двухфакторная аутентификация.
+4. Перейдите по следующему адресу: https://myaccount.google.com/apppasswords
+5. В строке "Имя приложения" введите любое название, которое вы хотите.
+6. Нажмите "Создать".
+7. Скопируйте пароль для этого приложения.
+Этот пароль нужно вставить в `application.properties`. Он позволит отправлять письма от вашего лица.
+Теперь перейдем к коду.
+`EmailService` имеет аннотацию `@Service`, а значит, его можно использовать в ваших сервисах:
+java
+Копировать код
+private EmailService mail;
+// Далее конструктор.
+
+// Метод контроллера
+public ResponseEntity<ResponseDto<?>> send() {
+    mail.setTemplate("reg-authen/hello"); // Шаблон
+    mail.send("mymail@gmail.com", "Subject", "message", null); // Отправка письма
+}
+1. Адрес получателя.
+2. Заголовок письма.
+3. Сообщение.
+4. Дополнительные параметры, необходимые в шаблоне.
+Рассмотрим, как вставляются дополнительные данные:
+java
+Копировать код
+public ResponseEntity<ResponseDto<?>> send() {
+    mail.setTemplate("reg-authen/hello"); // Шаблон
+    Map<String, String> vars = new HashMap<>();
+    vars.put("name", "Otto");
+    vars.put("surname", "Ulman");
+    mail.send("mymail@gmail.com", "Subject", "message", vars); // Отправка письма
+}
+Дополнительные данные добавлены. Что делать дальше? А дальше переходим к шаблонам и фрагментам.
+В директории `/src/main/resources/templates/email_service` хранятся шаблоны. Все шаблоны разделены по языкам:
+• `/src/main/resources/templates/email_service/ru`
+• `/src/main/resources/templates/email_service/en`
+• `/src/main/resources/templates/email_service/de`
+В этих языковых пакетах хранятся сами шаблоны. Внимание! Как формировать шаблоны, я здесь подробно не описываю, но могу сказать, что для шаблонов используется библиотека Thymeleaf. Информации об этом много в интернете, и ChatGPT может помочь в этом вопросе.
+Файл `/src/main/resources/templates/email_service/ru/fragments.html` хранит фрагменты. Вы можете назвать этот файл как угодно и поместить его куда хотите. Главное — помните, что корневой каталог для шаблонов — `/src/main/resources/templates/email_service`. Не пытайтесь создать один файл фрагментов и использовать его во всех языковых моделях.
+В фрагмент можно поместить, например, подвал письма или шапку:
+html
+Копировать код
+<!-- /src/main/resources/templates/email_service/ru/fragments.html -->
+<div th:fragment="footer (domain,email)">
+    <p th:text="${domain} + ' - ' + ${email}"></p>
+</div>
+`th:fragment` указывает, что этот кусок кода будет фрагментом. Фрагмент имеет имя `footer`, а в круглых скобках указаны переменные, которые используются в этом фрагменте. `th:text` вставляет содержимое в HTML-элемент. Необходимо использовать `th:text` или `th:utext` вместо `${domain}`.
+Есть шаблон, который вызывает этот фрагмент:
+html
+Копировать код
+<!-- /src/main/resources/templates/email_service/ru/reg-authen/hello.html -->
+<div th:replace="/ru/fragments :: footer (${domain}, ${email})"></div>
+`th:replace` вызывает и заменяет код на фрагмент. `/ru/fragments` указывает на файл `fragments.html`, `:: footer` — на фрагмент с именем `footer`, а круглые скобки содержат передаваемые параметры.
+Помните Java-код и переменные `vars`, в которые положили `name` и `surname`. В шаблоне их можно использовать:
+html
+Копировать код
+<p th:text="${name} + ' ' + ${surname}"></p>
+Результат будет: `Otto Ulman`. Если при вызове фрагмента передать их в круглых скобках, а в самом фрагменте их принять, то они также будут доступны.
+Вот такой небольшой EmailService.
