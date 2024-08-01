@@ -78,7 +78,7 @@ public class CartEntity {
     public BigDecimal getCartTotalCost() {
         return products.stream().filter(ProductEntity::isActive).map(ProductEntity::getPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
     }
-    public List<ProductEntity> getAllActiveProducts(Long cartId) {
+    public List<ProductEntity> getAllActiveProducts() {
         return products.stream().filter(ProductEntity::isActive).toList();
     }
     public void removeProductById(Long productId) {

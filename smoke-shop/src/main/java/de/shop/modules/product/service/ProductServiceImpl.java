@@ -38,8 +38,8 @@ public class ProductServiceImpl implements ProductService {
         } catch (Exception e) {
             return new ResponseDto<>(false, product, "product_not_saved", currentLanguage);
         }
-        mappingService.mapEntityToDto(entity);
-        return new ResponseDto<>(true, product, "product_saved", currentLanguage);
+        ProductDto newDto = mappingService.mapEntityToDto(entity);
+        return new ResponseDto<>(true, newDto, "product_saved", currentLanguage);
     }
 
     @Override

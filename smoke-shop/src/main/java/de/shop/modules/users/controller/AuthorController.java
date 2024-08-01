@@ -79,17 +79,17 @@ public class AuthorController {
         return ResponseEntity.ok(service.reg(inputRegDto));
     }
 
-    /**
-     * Тестовый метод
-     *
-     * @return возвращает ResponseEntity.ok(ResponseDto<?>)
-     */
-    @GetMapping("/test")
-    public ResponseEntity<ResponseDto<?>> test() {
-        OutputRegDto user = new OutputRegDto();
-        user.setId(1L);
-        user.setEmail("support@sport-car.de");
-        return ResponseEntity.ok(new ResponseDto<>(true, user, "ok", lang.getCurrentLang()));
-    }
+//    /**
+//     * Тестовый метод
+//     *
+//     * @return возвращает ResponseEntity.ok(ResponseDto<?>)
+//     */
+//    @GetMapping("/test")
+//    public ResponseEntity<ResponseDto<?>> test() {
+//        OutputRegDto user = new OutputRegDto();
+//        user.setId(1L);
+//        user.setEmail("support@sport-car.de");
+//        return ResponseEntity.ok(new ResponseDto<>(true, user, "ok", lang.getCurrentLang()));
+//    }
 
 }

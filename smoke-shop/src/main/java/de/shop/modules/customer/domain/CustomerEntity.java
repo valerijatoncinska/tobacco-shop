@@ -2,6 +2,7 @@ package de.shop.modules.customer.domain;
 
 import de.shop.modules.address.domain.AddressEntity;
 import de.shop.modules.cart.domain.CartEntity;
+import de.shop.modules.orderHistory.domain.OrderHistoryEntity;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -26,6 +27,9 @@ public class CustomerEntity {
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private AddressEntity address;
+
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private OrderHistoryEntity orderHistory;
 
     public CartEntity getCart() {
         return cart;
@@ -67,17 +71,25 @@ public class CustomerEntity {
         this.address = address;
     }
 
+    public OrderHistoryEntity getOrderHistory() {
+        return orderHistory;
+    }
+
+    public void setOrderHistory(OrderHistoryEntity orderHistory) {
+        this.orderHistory = orderHistory;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CustomerEntity entity = (CustomerEntity) o;
-        return active == entity.active && Objects.equals(id, entity.id) && Objects.equals(name, entity.name) && Objects.equals(cart, entity.cart) && Objects.equals(address, entity.address);
+        CustomerEntity customer = (CustomerEntity) o;
+        return active == customer.active && Objects.equals(id, customer.id) && Objects.equals(name, customer.name) && Objects.equals(cart, customer.cart) && Objects.equals(address, customer.address) && Objects.equals(orderHistory, customer.orderHistory);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, active, cart, address);
+        return Objects.hash(id, name, active, cart, address, orderHistory);
     }
 
     @Override
@@ -88,6 +100,7 @@ public class CustomerEntity {
                 ", active=" + active +
                 ", cart=" + cart +
                 ", address=" + address +
+                ", orderHistory" + orderHistory +
                 '}';
     }
 }

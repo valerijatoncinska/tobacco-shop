@@ -46,4 +46,5 @@ public class ProductController {
     public ResponseDto<List<ProductDto>> findAllActiveProducts() {
         return service.findAllActiveProducts();
     }
+
 }

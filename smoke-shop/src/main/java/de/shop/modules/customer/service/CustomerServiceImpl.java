@@ -10,6 +10,12 @@ import de.shop.modules.customer.domain.CustomerDto;
 import de.shop.modules.customer.domain.CustomerEntity;
 import de.shop.modules.customer.repository.CustomerRepository;
 import de.shop.modules.customer.service.mapping.CustomerMappingService;
+import de.shop.modules.order.domain.dto.OrderDto;
+import de.shop.modules.order.domain.entity.OrderEntity;
+import de.shop.modules.order.repository.OrderRepository;
+import de.shop.modules.order.service.mapping.OrderMappingService;
+import de.shop.modules.orderHistory.domain.OrderHistoryDto;
+import de.shop.modules.orderHistory.domain.OrderHistoryEntity;
 import de.shop.modules.product.domain.dto.ProductDto;
 import de.shop.modules.product.domain.entity.ProductEntity;
 import de.shop.modules.product.repository.interfaces.ProductRepository;
@@ -28,14 +34,20 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerMappingService mappingService;
     private final ProductRepository productRepository;
     private final ProductMappingService productMappingService;
+
+    private final OrderRepository orderRepository;
+
+    private final OrderMappingService orderMappingService;
     private final String currentLanguage;
 
     @Autowired
-    public CustomerServiceImpl(CustomerRepository repository, CustomerMappingService mappingService, ProductRepository productRepository, ProductMappingService productMappingService, LanguageResolver lang) {
+    public CustomerServiceImpl(CustomerRepository repository, CustomerMappingService mappingService, ProductRepository productRepository, ProductMappingService productMappingService, OrderRepository orderRepository, OrderMappingService orderMappingService, LanguageResolver lang) {
         this.repository = repository;
         this.mappingService = mappingService;
         this.productRepository = productRepository;
         this.productMappingService = productMappingService;
+        this.orderRepository = orderRepository;
+        this.orderMappingService = orderMappingService;
         Properties p = lang.load("customers", "messages");
         this.currentLanguage = lang.getCurrentLang();
     }
@@ -175,6 +187,64 @@ public class CustomerServiceImpl implements CustomerService {
 
 
         return new ResponseDto<>(true, confirmation, "clear_cart", currentLanguage);
+    }
+
+    @Override
+    public ResponseDto<List<ProductDto>> getCart(Long customerId) {
+
+        CustomerEntity customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id %d not found", customerId)));
+
+        List<ProductDto> productDtoList = customer.getCart().getAllActiveProducts().stream().map(productMappingService::mapEntityToDto).toList();
+
+        return new ResponseDto<>(true, productDtoList, "get_cart", currentLanguage);
+    }
+
+    @Override
+    public ResponseDto<List<OrderDto>> getOrderHistory(Long customerId) {
+
+        CustomerEntity customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id %d not found", customerId)));
+
+        List<OrderDto> orderDtoList = customer.getOrderHistory().getOrders().stream().map(orderMappingService::mapEntityToDto).toList();
+
+        return new ResponseDto<>(true, orderDtoList, "get_order_history", currentLanguage);
+    }
+
+    @Override
+    public ResponseDto<OrderDto> addOrderToHistory(Long customerId, Long orderId) {
+
+        CustomerEntity customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id %d not found", customerId)));
+        OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow(() -> new ProductNotFoundException(String.format("Order with id %d not found", orderId)));
+
+        customer.getOrderHistory().addOrderToHistory(orderEntity);
+
+        OrderDto orderDto = orderMappingService.mapEntityToDto(orderEntity);
+
+
+        return new ResponseDto<>(true, orderDto, "add_order_to_order_history", currentLanguage);
+    }
+
+    @Override
+    public ResponseDto<String> removeOrderFromHistory(Long customerId, Long orderId) {
+
+        CustomerEntity customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id %d not found", customerId)));
+
+        customer.getOrderHistory().removeOrderById(orderId);
+
+        String confirmation = String.format("Order with id %d was removed", orderId);
+
+        return new ResponseDto<>(true, confirmation, "order_with_id_removed", currentLanguage);
+    }
+
+    @Override
+    public ResponseDto<String> clearOrderHistory(Long customerId) {
+
+        CustomerEntity customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id %d not found", customerId)));
+
+        customer.getOrderHistory().clearOrderHistory();
+
+        String confirmation = String.format("OrderHistory for customer with id %d was cleared", customerId);
+
+        return new ResponseDto<>(true, confirmation, "clear_order_history", currentLanguage);
     }
 
 }

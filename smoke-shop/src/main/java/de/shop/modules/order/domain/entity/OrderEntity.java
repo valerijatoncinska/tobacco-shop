@@ -35,7 +35,7 @@ public class OrderEntity {
             inclusive = false,
             message = "Total price should be lesser than 100000.00"
     )
-    @Column(name = "price")
+    @Column(name = "total_cost")
     private BigDecimal totalPrice;
 
     @Max(99)
@@ -45,9 +45,12 @@ public class OrderEntity {
 
     @NotNull
     @NotEmpty
+    @Column(name = "order_date")
     private LocalDate orderDate;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
     private OrderStatus status;
 
     public OrderEntity() {
