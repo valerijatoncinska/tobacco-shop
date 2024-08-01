@@ -3,12 +3,11 @@ package de.shop.modules.product.controller;
 import de.shop.core.components.ResponseDto;
 import de.shop.modules.product.domain.dto.ProductDto;
 import de.shop.modules.product.service.ProductService;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/products")
 public class ProductController {
 

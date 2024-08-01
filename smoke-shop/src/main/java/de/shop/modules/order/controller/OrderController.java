@@ -3,12 +3,11 @@ package de.shop.modules.order.controller;
 import de.shop.core.components.ResponseDto;
 import de.shop.modules.order.domain.dto.OrderDto;
 import de.shop.modules.order.service.OrderService;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService service;
