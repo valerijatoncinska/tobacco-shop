@@ -15,7 +15,7 @@ public class DigitalOceanDataSourceConfig {
     @Value("${DB_USERNAME}")
     private String username;
 
-    @Value("${DB_PASSWORD2}")
+    @Value("${DB_PASSWORD}")
     private String password;
 
     @Value("${DB_HOST}")
