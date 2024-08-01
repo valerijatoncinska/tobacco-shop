@@ -3,10 +3,12 @@ package de.shop.modules.customer.controller;
 import de.shop.core.components.ResponseDto;
 import de.shop.modules.customer.domain.CustomerDto;
 import de.shop.modules.customer.service.CustomerService;
+import de.shop.modules.order.domain.dto.OrderDto;
 import de.shop.modules.product.domain.dto.ProductDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/customers")
@@ -81,5 +83,30 @@ public class CustomerController {
     @DeleteMapping("/{customerId}/cart-clearance")
     public ResponseDto<String> clearCart(@PathVariable Long customerId) {
         return service.clearCart(customerId);
+    }
+
+    @GetMapping("/{customerId}/get-cart")
+    public ResponseDto<List<ProductDto>> getCart(@PathVariable Long customerId){
+        return service.getCart(customerId);
+    }
+
+    @GetMapping("/{customerId/get-order-history}")
+    public ResponseDto<List<OrderDto>> getOrderHistory(@PathVariable Long customerId){
+        return service.getOrderHistory(customerId);
+    }
+
+    @PostMapping("/{customerId}/order-history-addition/{orderId}")
+    public ResponseDto<OrderDto> addOrderToHistory(@PathVariable Long customerId,@PathVariable Long orderId){
+        return service.addOrderToHistory(customerId, orderId);
+    }
+
+    @DeleteMapping("/{customerId}/order-history-removal/{orderId}")
+    public ResponseDto<String> removeOrderFromHistory(@PathVariable Long customerId,@PathVariable Long orderId){
+        return service.removeOrderFromHistory(customerId, orderId);
+    }
+
+    @DeleteMapping("/{customerId}/cart-clearance")
+    public ResponseDto<String> clearOrderHistory(@PathVariable Long customerId){
+        return service.clearOrderHistory(customerId);
     }
 }
