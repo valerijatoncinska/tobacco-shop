@@ -85,12 +85,12 @@ public class CustomerController {
         return service.clearCart(customerId);
     }
 
-    @GetMapping("/{customerId}/get-cart")
+    @GetMapping("/{customerId}/cart")
     public ResponseDto<List<ProductDto>> getCart(@PathVariable Long customerId){
         return service.getCart(customerId);
     }
 
-    @GetMapping("/{customerId/get-order-history}")
+    @GetMapping("/{customerId/order-history}")
     public ResponseDto<List<OrderDto>> getOrderHistory(@PathVariable Long customerId){
         return service.getOrderHistory(customerId);
     }
