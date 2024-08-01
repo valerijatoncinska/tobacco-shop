@@ -6,7 +6,7 @@ import de.shop.modules.order.service.OrderService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/available_orders")
 public class OrderController {
     private final OrderService service;
 
@@ -21,8 +21,8 @@ public class OrderController {
         return service.save(order);
     }
 
-    @DeleteMapping
-    public ResponseDto<OrderDto> deleteById(@RequestParam Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseDto<OrderDto> deleteById(@PathVariable Long id) {
         return service.deleteById(id);
     }
 
@@ -31,8 +31,8 @@ public class OrderController {
         return service.update(order);
     }
 
-    @GetMapping
-    public ResponseDto<?> findById(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public ResponseDto<?> findById(@PathVariable Long id) {
         return service.findById(id);
     }
 

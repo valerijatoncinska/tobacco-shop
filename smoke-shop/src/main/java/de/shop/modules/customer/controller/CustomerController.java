@@ -25,15 +25,16 @@ public class CustomerController {
         return service.save(dto);
     }
 
-    @GetMapping()
-    public ResponseDto<?> getById(@RequestParam(required = false) Long id
-    ) {
-        if (id == null) {
-            return service.getAllActiveCustomers();
-        } else {
-            return service.getActiveCustomerById(id);
-        }
+    @GetMapping("/{id}")
+    public ResponseDto<CustomerDto> getById(@PathVariable Long id) {
 
+        return service.getById(id);
+    }
+
+    @GetMapping
+    public ResponseDto<List<CustomerDto>> getAllCustomers() {
+
+        return service.getAllActiveCustomers();
     }
 
     @PutMapping
@@ -51,7 +52,7 @@ public class CustomerController {
 //        return null;
 //    }
 
-    @PutMapping("{id}/restoration")
+    @PutMapping("/{id}/restoration")
     public ResponseDto<CustomerDto> restoreById(@PathVariable Long id) {
         return service.restoreById(id);
     }
@@ -61,9 +62,9 @@ public class CustomerController {
         return service.getActiveCustomersNumber();
     }
 
-    @GetMapping("/cart-total-cost")
-    public ResponseDto<BigDecimal> getCartTotalCost(@RequestParam Long customerId) {
-        return service.getCartTotalCost(customerId);
+    @GetMapping("/{id}/cart-total-cost")
+    public ResponseDto<BigDecimal> getCartTotalCost(@PathVariable Long id) {
+        return service.getCartTotalCost(id);
     }
 
     @PutMapping("/{customerId}/cart-product-addition/{productId}")
@@ -86,27 +87,27 @@ public class CustomerController {
     }
 
     @GetMapping("/{customerId}/cart")
-    public ResponseDto<List<ProductDto>> getCart(@PathVariable Long customerId){
+    public ResponseDto<List<ProductDto>> getCart(@PathVariable Long customerId) {
         return service.getCart(customerId);
     }
 
-    @GetMapping("/{customerId/order-history}")
-    public ResponseDto<List<OrderDto>> getOrderHistory(@PathVariable Long customerId){
+    @GetMapping("/{customerId}/order-history")
+    public ResponseDto<List<OrderDto>> getOrderHistory(@PathVariable Long customerId) {
         return service.getOrderHistory(customerId);
     }
 
     @PostMapping("/{customerId}/order-history-addition/{orderId}")
-    public ResponseDto<OrderDto> addOrderToHistory(@PathVariable Long customerId,@PathVariable Long orderId){
+    public ResponseDto<OrderDto> addOrderToHistory(@PathVariable Long customerId, @PathVariable Long orderId) {
         return service.addOrderToHistory(customerId, orderId);
     }
 
     @DeleteMapping("/{customerId}/order-history-removal/{orderId}")
-    public ResponseDto<String> removeOrderFromHistory(@PathVariable Long customerId,@PathVariable Long orderId){
+    public ResponseDto<String> removeOrderFromHistory(@PathVariable Long customerId, @PathVariable Long orderId) {
         return service.removeOrderFromHistory(customerId, orderId);
     }
 
-    @DeleteMapping("/{customerId}/cart-clearance")
-    public ResponseDto<String> clearOrderHistory(@PathVariable Long customerId){
+    @DeleteMapping("/{customerId}/history-clearance")
+    public ResponseDto<String> clearOrderHistory(@PathVariable Long customerId) {
         return service.clearOrderHistory(customerId);
     }
 }
