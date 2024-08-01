@@ -9,13 +9,13 @@ import org.springframework.context.annotation.Profile;
 import javax.sql.DataSource;
 
 @Configuration
-@Profile("prod")
+@Profile("not_dev")
 public class DigitalOceanDataSourceConfig {
 
     @Value("${DB_USERNAME}")
     private String username;
 
-    @Value("${DB_PASSWORD}")
+    @Value("${DB_PASSWORD2}")
     private String password;
 
     @Value("${DB_HOST}")
