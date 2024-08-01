@@ -13,7 +13,7 @@ public interface OrderService {
 
     ResponseDto<OrderDto> update(OrderDto dto);
 
-    ResponseDto<OrderDto> findById(Long id);
+    ResponseDto<?> findById(Long id);
 
     ResponseDto<List<OrderDto>> findAllOrders();
 

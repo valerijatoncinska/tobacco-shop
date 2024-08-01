@@ -5,8 +5,6 @@ import de.shop.modules.order.domain.dto.OrderDto;
 import de.shop.modules.order.service.OrderService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -32,12 +30,8 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseDto<OrderDto> findById(@RequestParam Long id) {
+    public ResponseDto<?> findById(@RequestParam Long id) {
         return service.findById(id);
     }
 
-    @GetMapping("/all")
-    public ResponseDto<List<OrderDto>> findAllActiveProducts() {
-        return service.findAllOrders();
-    }
 }

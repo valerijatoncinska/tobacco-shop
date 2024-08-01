@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ResponseDto<OrderDto> deleteById(Long id) {
-        OrderDto dto = findById(id).getData();
+        OrderDto dto = (OrderDto) findById(id).getData();
         OrderEntity entity = mappingService.mapDtoToEntity(dto);
         try {
             repository.delete(entity);
@@ -61,7 +61,7 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public ResponseDto<OrderDto> update(OrderDto dto) {
         Long id = dto.getId();
-        OrderDto orderDto = findById(id).getData();
+        OrderDto orderDto = (OrderDto) findById(id).getData();
         OrderEntity entity = mappingService.mapDtoToEntity(orderDto);
 
         BigDecimal dtoProductsTotalPrice = dto.getProducts().stream().map(ProductEntity::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -78,11 +78,22 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ResponseDto<OrderDto> findById(Long id) {
-        OrderEntity entity = repository.findById(id).orElseThrow(() -> new OrderNotFoundException("order_not_found_by_id"));
+    public ResponseDto<?> findById(Long id) {
 
-        OrderDto dto = mappingService.mapEntityToDto(entity);
-        return new ResponseDto<>(true, dto, "order_found", currentLanguage);
+        if (!(id == null) && !(String.valueOf(id).isEmpty())) {
+            OrderEntity entity = repository.findById(id).orElseThrow(() -> new OrderNotFoundException("order_not_found_by_id"));
+
+            OrderDto oneDto = mappingService.mapEntityToDto(entity);
+
+            return new ResponseDto<>(true, oneDto, "order_found", currentLanguage);
+
+        } else {
+            List<OrderDto> foundOrders = repository.findAll()
+                    .stream()
+                    .map(mappingService::mapEntityToDto)
+                    .toList();
+            return new ResponseDto<>(true, foundOrders, "all_orders_found", currentLanguage);
+        }
     }
 
     @Override

@@ -10,6 +10,7 @@ import de.shop.modules.customer.domain.CustomerDto;
 import de.shop.modules.customer.domain.CustomerEntity;
 import de.shop.modules.customer.repository.CustomerRepository;
 import de.shop.modules.customer.service.mapping.CustomerMappingService;
+import de.shop.modules.orderHistory.domain.OrderHistoryDto;
 import de.shop.modules.product.domain.dto.ProductDto;
 import de.shop.modules.product.domain.entity.ProductEntity;
 import de.shop.modules.product.repository.interfaces.ProductRepository;
@@ -175,6 +176,26 @@ public class CustomerServiceImpl implements CustomerService {
 
 
         return new ResponseDto<>(true, confirmation, "clear_cart", currentLanguage);
+    }
+
+    @Override
+    public ResponseDto<OrderHistoryDto> getOrderHistory(Long customerId) {
+        return null;
+    }
+
+    @Override
+    public ResponseDto<OrderHistoryDto> addOrderToHistory(Long customerId, Long orderId) {
+        return null;
+    }
+
+    @Override
+    public ResponseDto<OrderHistoryDto> removeOrderFromHistory(Long customerId, Long orderId) {
+        return null;
+    }
+
+    @Override
+    public ResponseDto<OrderHistoryDto> clearOrderHistory(Long customerId) {
+        return null;
     }
 
 }

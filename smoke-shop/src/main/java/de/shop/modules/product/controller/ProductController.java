@@ -38,12 +38,12 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseDto<ProductDto> findById(@RequestParam Long id) {
-        return service.findById(id);
+    public ResponseDto<?> findById(@RequestParam(required = false)  Long id) {
+        if (id == null) {
+            return service.findAllActiveProducts();
+        } else {
+            return service.findById(id);
+        }
     }
 
-    @GetMapping("/all")
-    public ResponseDto<List<ProductDto>> findAllActiveProducts() {
-        return service.findAllActiveProducts();
-    }
 }
