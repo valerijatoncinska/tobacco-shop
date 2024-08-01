@@ -1,6 +1,7 @@
 package de.shop.modules.customer.domain;
 
 import de.shop.modules.cart.domain.CartDto;
+import de.shop.modules.orderHistory.domain.OrderHistoryDto;
 
 import java.util.Objects;
 
@@ -9,6 +10,16 @@ public class CustomerDto {
     private Long id;
     private String name;
     private CartDto cart;
+
+    private OrderHistoryDto orderHistory;
+
+    public OrderHistoryDto getOrderHistory() {
+        return orderHistory;
+    }
+
+    public void setOrderHistory(OrderHistoryDto orderHistory) {
+        this.orderHistory = orderHistory;
+    }
 
     public Long getId() {
         return id;
@@ -39,17 +50,17 @@ public class CustomerDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CustomerDto that = (CustomerDto) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(cart, that.cart);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(cart, that.cart) && Objects.equals(orderHistory, that.orderHistory);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, cart);
+        return Objects.hash(id, name, cart, orderHistory);
     }
 
     @Override
     public String toString() {
-        return String.format("Customer: id - %d, name - %s, cart - %s",
-                id, name, cart == null ? "ERROR! Cart is missing" : cart);
+        return String.format("Customer: id - %d, name - %s, cart - %s has %d orders",
+                id, name, cart == null ? "ERROR! Cart is missing" : cart, orderHistory.getOrders().size());
     }
 }
