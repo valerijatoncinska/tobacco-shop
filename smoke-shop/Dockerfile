@@ -7,7 +7,7 @@ COPY src src
 
 RUN mvn -DskipTests=true clean package
 
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 FROM eclipse-temurin:17-jre-alpine
 
