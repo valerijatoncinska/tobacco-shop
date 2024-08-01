@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 import javax.sql.DataSource;
 
 @Configuration
-@Profile("profile")
+@Profile("prod")
 public class DigitalOceanDataSourceConfig {
 
     @Value("${DB_USERNAME}")
@@ -31,7 +31,7 @@ public class DigitalOceanDataSourceConfig {
     public DataSource dataSource() {
         return DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
-                .url(String.format("jdbc:postgresql://%s:%s/%s", hostname, port, database))
+                .url("jdbc:postgresql://"+ hostname + ":" + port + "/" + database)
                 .username(username)
                 .password(password)
                 .build();
