@@ -25,7 +25,7 @@ public class DigitalOceanDataSourceConfig {
     public DataSource dataSource() {
         return DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
-                .url("jdbc:postgresql://"+ DBUrl)
+                .url(DBUrl)
                 .username(username)
                 .password(password)
                 .build();
