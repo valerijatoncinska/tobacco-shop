@@ -37,13 +37,14 @@ public class ProductController {
         return service.update(product);
     }
 
+    @GetMapping("/{id}")
+    public ResponseDto<ProductDto> findById(@PathVariable Long id) {
+        return service.findById(id);
+    }
+
     @GetMapping
-    public ResponseDto<?> findById(@RequestParam(required = false)  Long id) {
-        if (id == null) {
-            return service.findAllActiveProducts();
-        } else {
-            return service.findById(id);
-        }
+    public ResponseDto<List<ProductDto>> findAllActiveProducts() {
+        return service.findAllActiveProducts();
     }
 
 }
