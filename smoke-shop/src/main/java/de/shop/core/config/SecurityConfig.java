@@ -66,13 +66,14 @@ public class SecurityConfig {
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x -> x
-                        .requestMatchers(HttpMethod.GET, "/products").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/author/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/author/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/user/**").hasAuthority("ROLE_USER")
-                        .requestMatchers(HttpMethod.GET,"/email/**").permitAll()
-                        .requestMatchers("swagger-ui.html", "v3/api-docs/**", "swagger-ui/**").permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers(HttpMethod.GET, "/products").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/author/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/author/**").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/user/**").hasAuthority("ROLE_USER")
+//                        .requestMatchers(HttpMethod.GET,"/email/**").permitAll()
+//                        .requestMatchers("swagger-ui.html", "v3/api-docs/**", "swagger-ui/**").permitAll()
+//                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 );
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
