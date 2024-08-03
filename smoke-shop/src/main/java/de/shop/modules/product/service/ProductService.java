@@ -2,21 +2,26 @@ package de.shop.modules.product.service;
 
 import de.shop.core.components.ResponseDto;
 import de.shop.modules.product.domain.dto.ProductDto;
+import de.shop.modules.product.domain.entity.ProductEntity;
 
 import java.util.List;
 
 public interface ProductService {
 
-    ResponseDto<ProductDto> save(ProductDto product);
+    ProductEntity save(ProductEntity product);
 
-    ResponseDto<ProductDto> deleteById(Long id);
+    void archiveById(Long id);
 
-    ResponseDto<ProductDto> restoreById(Long id);
+    ProductEntity restoreById(Long id);
 
-    ResponseDto<ProductDto> update(ProductDto product);
+    ProductEntity update(ProductEntity entity);
 
-    ResponseDto<ProductDto> findById(Long id);
+    ProductDto findByIdForUser(Long id);
 
-    ResponseDto<List<ProductDto>> findAllActiveProducts();
+    ProductEntity findByIdForAdmin(Long id);
+
+    List<ProductEntity> findAllActiveProductsForAdmin();
+
+    List<ProductDto> findAllActiveProductsForUsers();
 
 }

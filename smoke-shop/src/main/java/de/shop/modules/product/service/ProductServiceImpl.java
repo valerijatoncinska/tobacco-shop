@@ -2,14 +2,13 @@ package de.shop.modules.product.service;
 
 import de.shop.core.components.LanguageResolver;
 import de.shop.core.components.ResponseDto;
-import de.shop.core.exceptions.CustomerNotFoundException;
 import de.shop.core.exceptions.ProductNotFoundException;
+import de.shop.core.exceptions.ProductNotSavedException;
 import de.shop.modules.product.domain.dto.ProductDto;
 import de.shop.modules.product.domain.entity.ProductEntity;
 import de.shop.modules.product.repository.interfaces.ProductRepository;
 import de.shop.modules.product.service.mapping.ProductMappingService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Properties;
@@ -19,84 +18,103 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository repository;
     private final ProductMappingService mappingService;
-    private Properties p;
-    private String currentLanguage;
+    private LanguageResolver lang;
 
     public ProductServiceImpl(ProductRepository repository, ProductMappingService mappingService, LanguageResolver lang) {
         this.repository = repository;
         this.mappingService = mappingService;
-        this.p = lang.load("product", "messages");
-        this.currentLanguage = lang.getCurrentLang();
+        this.lang = lang;
     }
 
     @Override
-    public ResponseDto<ProductDto> save(ProductDto product) {
-        ProductEntity entity = mappingService.mapDtoToEntity(product);
+    public ProductEntity save(ProductEntity product) {
+        Properties p = lang.load("product", "messages");
 
         try {
-            repository.save(entity);
+            repository.save(product);
         } catch (Exception e) {
-            return new ResponseDto<>(false, product, "product_not_saved", currentLanguage);
+            throw new ProductNotSavedException(((String) p.get("product_not_saved")));
         }
-        ProductDto newDto = mappingService.mapEntityToDto(entity);
-        return new ResponseDto<>(true, newDto, "product_saved", currentLanguage);
+        return product;
     }
 
     @Override
-    public ResponseDto<ProductDto> deleteById(Long id) {
-        ProductDto dto = findById(id).getData();
-        ProductEntity entity = mappingService.mapDtoToEntity(dto);
-        entity.setActive(false);
-        dto = mappingService.mapEntityToDto(entity);
-
-        return new ResponseDto<>(true, dto, "product_deleted", currentLanguage);
+    public void archiveById(Long id) {
+        Properties p = lang.load("product", "messages");
+        ProductEntity entity = repository.findById(id).orElseThrow( () -> new ProductNotFoundException(((String) p.get("product_not_found"))));
+        if (entity.isActive()) {
+            entity.setActive(false);
+        } else {
+            throw new ProductNotFoundException(((String) p.get("product_already_archived")));
+        }
     }
 
     @Override
-    public ResponseDto<ProductDto> restoreById(Long id) {
-        ProductDto dto = findById(id).getData();
+    public ProductEntity restoreById(Long id) {
+        Properties p = lang.load("product", "messages");
+        ProductEntity entity = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(((String) p.get("product_not_found_by_id"))));
 
-        ProductEntity entity = mappingService.mapDtoToEntity(dto);
         entity.setActive(true);
-        dto = mappingService.mapEntityToDto(entity);
 
-        return new ResponseDto<>(true, dto, "product_restored", currentLanguage);
+        return entity;
     }
 
     @Override
-    public ResponseDto<ProductDto> update(ProductDto productDto) {
+    public ProductEntity update(ProductEntity entity) {
+        Properties p = lang.load("product", "messages");
 
-        Long id = productDto.getId();
-        ProductDto dto = findById(id).getData();
-        ProductEntity entity = mappingService.mapDtoToEntity(productDto);
+        Long id = entity.getId();
+        ProductEntity oldEntity = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(((String) p.get("product_not_found_by_id"))));
 
-        entity.setTitle(dto.getTitle());
-        entity.setPrice(dto.getPrice());
+        oldEntity.setTitle(entity.getTitle());
+        oldEntity.setPrice(entity.getPrice());
+        oldEntity.setActive(entity.isActive());
+        oldEntity.setQuantity(entity.getQuantity());
 
-        ProductDto newProduct = mappingService.mapEntityToDto(entity);
-        return new ResponseDto<>(true, newProduct, "product_updated", currentLanguage);
+        return oldEntity;
     }
 
     @Override
-    public ResponseDto<ProductDto> findById(Long id) {
+    public ProductDto findByIdForUser(Long id) {
+        Properties p = lang.load("product", "messages");
 
         ProductEntity entity = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(((String) p.get("product_not_found_by_id"))));
         if (!entity.isActive()) {
-            return new ResponseDto<>(false, mappingService.mapEntityToDto(entity),
-                    "product_is_inactive", currentLanguage);
+            throw new ProductNotFoundException(((String) p.get("product_not_active")));
+        } else {
+            ProductDto dto = mappingService.mapEntityToDto(entity);
+            return dto;
         }
-        ProductDto dto = mappingService.mapEntityToDto(entity);
-        return new ResponseDto<>(true, dto, "product_found", currentLanguage);
     }
 
     @Override
-    public ResponseDto<List<ProductDto>> findAllActiveProducts() {
+    public ProductEntity findByIdForAdmin(Long id) {
+        Properties p = lang.load("product", "messages");
+
+        ProductEntity entity = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(((String) p.get("product_not_found_by_id"))));
+        if (!entity.isActive()) {
+            throw new ProductNotFoundException(((String) p.get("product_not_found_by_id")));
+        }
+
+        return entity;
+    }
+
+    @Override
+    public List<ProductDto> findAllActiveProductsForUsers() {
         List<ProductDto> foundProducts = repository.findAll()
                 .stream()
                 .filter(ProductEntity::isActive)
                 .map(mappingService::mapEntityToDto)
                 .toList();
-        return new ResponseDto<>(true, foundProducts, "all_product_found", currentLanguage);
+        return foundProducts;
+    }
+
+    @Override
+    public List<ProductEntity> findAllActiveProductsForAdmin() {
+        return repository.findAll()
+                .stream()
+                .filter(ProductEntity::isActive)
+                .toList();
     }
 
 }

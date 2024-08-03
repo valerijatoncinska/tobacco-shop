@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ResponseDto<T> {
-    private boolean success; // Статус ответа. положительный или отрецательный
 
     private T data; // Данные
     private String message; // дополнительное сообщение
@@ -20,7 +19,6 @@ public class ResponseDto<T> {
     public ResponseDto(boolean success, T data, String message, String lang) {
         this.lang = lang;
         this.data = data;
-        this.success = success;
         this.message = message;
     }
 
@@ -36,10 +34,6 @@ public class ResponseDto<T> {
         this.data = data;
     }
 
-    public void setSuccess(String status) {
-        this.success = success;
-    }
-
     public void setMessage(String message) {
         this.message = message;
     }
@@ -50,10 +44,6 @@ public class ResponseDto<T> {
 
     public String getLang() {
         return lang;
-    }
-
-    public boolean getSuccess() {
-        return success;
     }
 
     public T getData() {

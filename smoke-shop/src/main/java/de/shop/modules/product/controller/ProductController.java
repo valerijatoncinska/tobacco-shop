@@ -17,34 +17,14 @@ public class ProductController {
         this.service = service;
     }
 
-    @PostMapping
-    public ResponseDto<ProductDto> save(@RequestBody ProductDto product) {
-        return service.save(product);
-    }
-
-    @PutMapping()
-    public ResponseDto<ProductDto> deleteById(@RequestParam Long id) {
-        return service.deleteById(id);
-    }
-
-    @PutMapping("/{id}/restore")
-    public ResponseDto<ProductDto> restoreById(@PathVariable Long id) {
-        return service.restoreById(id);
-    }
-
-    @PutMapping("/modification")
-    public ResponseDto<ProductDto> update(ProductDto product) {
-        return service.update(product);
-    }
-
     @GetMapping("/{id}")
-    public ResponseDto<ProductDto> findById(@PathVariable Long id) {
-        return service.findById(id);
+    public ProductDto findByIdForUser(@PathVariable (required = false) Long id) {
+        return service.findByIdForUser(id);
     }
 
     @GetMapping
-    public ResponseDto<List<ProductDto>> findAllActiveProducts() {
-        return service.findAllActiveProducts();
+    public List<ProductDto> findAllActiveProductsForUsers() {
+        return service.findAllActiveProductsForUsers();
     }
 
 }

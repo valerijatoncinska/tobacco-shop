@@ -31,7 +31,6 @@ public class GlobalExceptions {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resp);
     }
 
-
     @ExceptionHandler(RefreshTokenException.class)
     public ResponseEntity<ResponseDto<?>> refreshTokenException(RefreshTokenException e) {
         ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "401 - UNAUTHORIZED", lang.getCurrentLang());
@@ -86,4 +85,33 @@ public class GlobalExceptions {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resp);
     }
 
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ResponseDto<?>> findOrderException(OrderNotFoundException e) {
+        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "404 - Not found", lang.getCurrentLang());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ResponseDto<?>> findOrderException(ProductNotFoundException e) {
+        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "404 - Not found", lang.getCurrentLang());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+    }
+
+    @ExceptionHandler(OrderNotSavedException.class)
+    public ResponseEntity<?> findOrderException(OrderNotSavedException e) {
+        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "500 - Not saved", lang.getCurrentLang());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+    }
+
+    @ExceptionHandler(ProductNotSavedException.class)
+    public ResponseEntity<?> findOrderException(ProductNotSavedException e) {
+        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "500 - Not saved", lang.getCurrentLang());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+    }
+
+    @ExceptionHandler(ProductAlreadyNotActiveException.class)
+    public ResponseEntity<?> findOrderException(ProductAlreadyNotActiveException e) {
+        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "400_Already_not_active", lang.getCurrentLang());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
+    }
 }
