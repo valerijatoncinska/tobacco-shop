@@ -116,5 +116,4 @@ public class ProductServiceImpl implements ProductService {
                 .filter(ProductEntity::isActive)
                 .toList();
     }
-
 }

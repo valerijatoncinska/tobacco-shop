@@ -11,15 +11,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResponseDto<T> {
 
+    private boolean status;
     private T data; // Данные
     private String message; // дополнительное сообщение
     private String lang; // Язык
 
-
-    public ResponseDto(boolean success, T data, String message, String lang) {
-        this.lang = lang;
+    public ResponseDto(boolean status, T data, String message, String lang) {
+        this.status = status;
         this.data = data;
         this.message = message;
+        this.lang = lang;
     }
 
     public ResponseDto() {
@@ -50,5 +51,11 @@ public class ResponseDto<T> {
         return data;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
 
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 }

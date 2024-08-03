@@ -39,12 +39,11 @@ public class ProductControllerAdmin {
         return service.update(product);
     }
 
-    // already defined in all user access
-//    @GetMapping("/{id}")
-//    public ResponseDto<ProductDto> findById(@PathVariable Long id) {
-//        return service.findById(id);
-//    }
-//
+    @GetMapping("/{id}")
+    public ProductEntity findById(@PathVariable Long id) {
+        return service.findByIdForAdmin(id);
+    }
+
     @GetMapping
     public List<ProductEntity> findAllActiveProductsForAdmin() {
         return service.findAllActiveProductsForAdmin();
