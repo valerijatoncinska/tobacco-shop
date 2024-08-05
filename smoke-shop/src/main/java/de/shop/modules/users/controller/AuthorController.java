@@ -1,12 +1,10 @@
 package de.shop.modules.users.controller;
 
 import de.shop.core.components.LanguageResolver;
-import de.shop.core.components.ResponseDto;
 import de.shop.core.components.Validate;
 import de.shop.modules.users.domain.dto.InputLoginDto;
 import de.shop.modules.users.domain.dto.InputRefreshTokenDto;
 import de.shop.modules.users.domain.dto.InputRegDto;
-import de.shop.modules.users.domain.dto.OutputRegDto;
 import de.shop.modules.users.service.AuthorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,11 +35,10 @@ public class AuthorController {
      * @return возвращает ResponseEntity с вложенным ResponseDto
      */
     @PostMapping("refresh")
-    public ResponseEntity<ResponseDto<?>> refresh(@RequestBody InputRefreshTokenDto inputRefreshTokenDto) {
+    public ResponseEntity<?> refresh(@RequestBody InputRefreshTokenDto inputRefreshTokenDto) {
         // Будьте внимательны! Этот метод не работает, но он будет доделан
         Properties p = lang.load("users", "reg");
         validate.notBlank(inputRefreshTokenDto.getRefresh(), ((String) p.get("refresh.nodfound")));
-        System.out.println("Refresh. Входим в контроллер \n");
         return ResponseEntity.ok(service.refresh(inputRefreshTokenDto));
     }
 
@@ -52,7 +49,7 @@ public class AuthorController {
      * @return возвращает ResponseEntity с вложенным ResponseDto
      */
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto<?>> login(@RequestBody InputLoginDto inputLoginDto) {
+    public ResponseEntity<?> login(@RequestBody InputLoginDto inputLoginDto) {
         Properties p = lang.load("users", "reg");
         validate.email(inputLoginDto.getEmail(), ((String) p.get("validate.email")).replace("[column]", "email"));
         validate.notBlank(inputLoginDto.getPassword(), ((String) p.get("empty.column")).replace("[column]", "password"));
@@ -68,28 +65,26 @@ public class AuthorController {
      * @return возвращает ResponseEntity  с вложенным ResponseDto
      */
     @PostMapping("/reg")
-    public ResponseEntity<ResponseDto<?>> reg(@RequestBody InputRegDto inputRegDto) {
+    public ResponseEntity<?> reg(@RequestBody InputRegDto inputRegDto) {
         Properties p = lang.load("users", "reg");
 
         validate.email(inputRegDto.getEmail(), ((String) p.get("validate.email")).replace("[column]", "email"));
         validate.notBlank(inputRegDto.getPassword(), ((String) p.get("empty.column")).replace("[column]", "password"));
-        validate.password(inputRegDto.getPassword(), 10, 64, ((String) p.get("password.validate")).replace("[column]", "password").replace("[min", "10").replace("[max]", "64"));
-
-
+        validate.password(inputRegDto.getPassword(), 10, 31, ((String) p.get("password.validate")).replace("[column]", "password").replace("[min", "10").replace("[max]", "64"));
+        validate.checked(inputRegDto.getIsAdult(), ((String) p.get("is_adult")));
         return ResponseEntity.ok(service.reg(inputRegDto));
     }
 
-//    /**
-//     * Тестовый метод
-//     *
-//     * @return возвращает ResponseEntity.ok(ResponseDto<?>)
-//     */
-//    @GetMapping("/test")
-//    public ResponseEntity<ResponseDto<?>> test() {
-//        OutputRegDto user = new OutputRegDto();
-//        user.setId(1L);
-//        user.setEmail("support@sport-car.de");
-//        return ResponseEntity.ok(new ResponseDto<>(true, user, "ok", lang.getCurrentLang()));
-//    }
+    /**
+     * Метод, который принимает данные на активацию аккаунта и возвращает обратно результат
+     *
+     * @param uuid часть url, которая содержит уникальный ключ для активации
+     * @return возвращает строковое значение
+     */
+    @GetMapping("/account-activate/{uuid}")
+    public String accountActivate(@PathVariable String uuid) {
+        return service.accountActivate(uuid);
+    }
+
 
 }

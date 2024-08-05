@@ -1,7 +1,7 @@
 package de.shop.core.exceptions;
 
+import de.shop.core.ResponseError;
 import de.shop.core.components.LanguageResolver;
-import de.shop.core.components.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,103 +15,115 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptions {
     private LanguageResolver lang; // класс мультиязычности
-    @ExceptionHandler(EmailServiceException.class)
-    public ResponseEntity<ResponseDto<?>> emailServiceException(EmailServiceException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "503 - SERVICE UNAVAILABLE", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(resp);
-    }
-
     public GlobalExceptions(LanguageResolver lang) {
         this.lang = lang;
     }
-
-    @ExceptionHandler(JwtUtilException.class)
-    public ResponseEntity<ResponseDto<?>> jwtUtilException(JwtUtilException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "401 - UNAUTHORIZED", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resp);
+    @ExceptionHandler(EmailServiceException.class)
+    public ResponseEntity<?> emailServiceException(EmailServiceException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        System.out.println("503 - Service Unavailable \n "+resp.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
     }
 
+    @ExceptionHandler(UserSearchException.class)
+    public ResponseEntity<?> userSearchException(UserSearchException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        if (e.getMessage()!=null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+
+        }
+        else {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @ExceptionHandler(AccessException.class)
+    public ResponseEntity<?> accessException(AccessException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        if (e.getMessage()!=null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resp);
+
+        }
+        else {
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+
+
+    @ExceptionHandler(JwtUtilException.class)
+    public ResponseEntity<?> jwtUtilException(JwtUtilException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+System.out.println("401 - Unauthorized \n "+resp.getMessage()+" \n");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+
     @ExceptionHandler(RefreshTokenException.class)
-    public ResponseEntity<ResponseDto<?>> refreshTokenException(RefreshTokenException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "401 - UNAUTHORIZED", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resp);
+    public ResponseEntity<?> refreshTokenException(RefreshTokenException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        System.out.println("401 - Unauthorized \n "+resp.getMessage()+" \n");
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(LoginException.class)
-    public ResponseEntity<ResponseDto<?>> loginException(LoginException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "404 - NOT FOUND", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+    public ResponseEntity<?> loginException(LoginException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @ExceptionHandler(RegException.class)
-    public ResponseEntity<ResponseDto<?>> regException(RegException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "500 - INTERNAL_SERVER_ERROR", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resp);
+    public ResponseEntity<?> regException(RegException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        System.out.println("500 - internal server error \n "+resp.getMessage()+" \n");
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @ExceptionHandler(DBException.class)
-    public ResponseEntity<ResponseDto<?>> dbException(DBException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "500 - INTERNAL_SERVER_ERROR", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resp);
+    public ResponseEntity<?> dbException(DBException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        System.out.println("500 - internal server error \n "+resp.getMessage()+" \n");
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @ExceptionHandler(RegConflictException.class)
-    public ResponseEntity<ResponseDto<?>> regConflictException(RegConflictException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "409 - CONFLICT", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(resp);
+    public ResponseEntity<?> regConflictException(RegConflictException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     @ExceptionHandler(LoadUserByUsernameException.class)
-    public ResponseEntity<ResponseDto<?>> loadUserByUsernameException(LoadUserByUsernameException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "404 - Not found", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+    public ResponseEntity<?> loadUserByUsernameException(LoadUserByUsernameException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ResponseDto<?>> validateException(MethodArgumentNotValidException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "400 BAD REQUEST", lang.getCurrentLang());
+    public ResponseEntity<?> validateException(MethodArgumentNotValidException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
     }
 
     @ExceptionHandler(ValidateException.class)
-    public ResponseEntity<ResponseDto<?>> validateException(ValidateException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto<>(false, e.getMessage(), "400 Bad request", lang.getCurrentLang()));
+    public ResponseEntity<?> validateException(ValidateException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
     }
 
 
     @ExceptionHandler(ParsePropertiesException.class)
-    public ResponseEntity<ResponseDto<?>> parsePropertiesException(ParsePropertiesException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "500 - INTERNAL_SERVER_ERROR", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resp);
+    public ResponseEntity<?> parsePropertiesException(ParsePropertiesException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        System.out.println("500 - internal server error#\n "+resp.getMessage()+ " \n");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @ExceptionHandler(OrderNotFoundException.class)
-    public ResponseEntity<ResponseDto<?>> findOrderException(OrderNotFoundException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "404 - Not found", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
-    }
-
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ResponseDto<?>> findOrderException(ProductNotFoundException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "404 - Not found", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
-    }
-
-    @ExceptionHandler(OrderNotSavedException.class)
-    public ResponseEntity<?> findOrderException(OrderNotSavedException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "500 - Not saved", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
-    }
-
-    @ExceptionHandler(ProductNotSavedException.class)
-    public ResponseEntity<?> findOrderException(ProductNotSavedException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "500 - Not saved", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
-    }
-
-    @ExceptionHandler(ProductAlreadyNotActiveException.class)
-    public ResponseEntity<?> findOrderException(ProductAlreadyNotActiveException e) {
-        ResponseDto<?> resp = new ResponseDto(false, e.getMessage(), "400_Already_not_active", lang.getCurrentLang());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
-    }
 }

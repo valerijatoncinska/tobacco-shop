@@ -1,5 +1,5 @@
 package de.shop.modules.users.jwt;
-/* Время: 26.07.2024 09:00 | Artem */
+
 import de.shop.core.components.LanguageResolver;
 import de.shop.core.exceptions.JwtUtilException;
 import io.jsonwebtoken.Claims;
@@ -24,8 +24,8 @@ public class JwtUtil {
 
     private final SecretKey accessTokenKey;
     private final SecretKey refreshTokenKey;
-    private final long accessTokenValidity;
-    private final long refreshTokenValidity;
+    private  long accessTokenValidity = 1000L * 60 * 60 * 24 * 7;
+    private long refreshTokenValidity = 1000L * 60 * 60 * 24 * 30;
 private LanguageResolver lang;
 private Properties p;
     public JwtUtil(
@@ -34,8 +34,6 @@ private Properties p;
             LanguageResolver lang) {
         this.accessTokenKey = convertToSecretKey(accessTokenKeyStr);
         this.refreshTokenKey = convertToSecretKey(refreshTokenKeyStr);
-        this.accessTokenValidity = 1000 * 60 * 60 * 24 * 7; // 15 минут
-        this.refreshTokenValidity = 1000 * 60 * 60 * 24 * 30; // 7 дней
         this.lang = lang;
         this.p = lang.load("users","reg");
     }
@@ -93,11 +91,13 @@ private Properties p;
     }
 
     private String createToken(Map<String, Object> claims, String subject, SecretKey key, long expirationMillis) {
+        Date date = new Date(System.currentTimeMillis() + expirationMillis);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
+                .setExpiration(date)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }

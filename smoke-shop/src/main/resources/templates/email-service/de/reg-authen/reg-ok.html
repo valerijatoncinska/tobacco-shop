@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<title th:text="${title}"> </title>
+</head>
+<body>
+<div lang="de">
+<h1>Kontobestätigung</h1>
+<div th:replace="/de/fragments :: logo (domain, name_app)"></div>
+<br>
+<p>Hallo! Sie haben sich in unserem Geschäft registriert.<br>
+Um den Dienst weiterhin nutzen zu können, müssen Sie Ihr Konto bestätigen.<br>
+Bitte klicken Sie auf den folgenden Link.</p><br>
+
+<p><a th:href="${link_active}">Konto bestätigen</a></p><br>
+
+<p>Wichtig! Falls die Registrierung von jemand anderem vorgenommen wurde, bestätigen Sie bitte das Konto nicht.<br>
+Nach 24 Stunden wird Ihre E-Mail-Adresse aus unserer Datenbank entfernt und das Konto gelöscht.</p>
+<br>
+<div th:replace="/de/fragments :: footer (${domain},${email},${adress},${contact_email},${contact_tel},${work_time},${name_app})"></div>
+</div>
+</body>
+</html>

@@ -1,10 +1,12 @@
 package de.shop.modules.users.domain.entity;
+// Внимание! Сущность используется для регистрации
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +31,20 @@ public class UserEntity implements UserDetails {
 
     @Column(name = "password", nullable = false)
     private String password;
-
+    @Column(name = "is_adult", nullable = false)
+    private boolean isadult;
+    @Column(name = "subscribe_news", nullable = false)
+    private boolean subscribeNews;
+    @Column(name = "active_code")
+    private String activeCode;
+    @Column(name = "time_reg")
+    private LocalDateTime timeReg;
+    @Column(name = "time_visit")
+    private LocalDateTime timeVisit;
+    @Column(name = "active_code_expiry")
+    private LocalDateTime activeCodeExpiry;
+    @Column(name = "email_active")
+    private boolean emailActive;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
@@ -42,10 +57,17 @@ public class UserEntity implements UserDetails {
 
     }
 
-    public UserEntity(String email, String password, Set<RoleEntity> roles) {
+    public UserEntity(String email, String password, Set<RoleEntity> roles, boolean isadult, boolean subscribe_news, String activeCode, LocalDateTime timeReg, LocalDateTime timeVisit, LocalDateTime activeCodeExpiry) {
         this.email = email;
         this.password = password;
         this.roles = roles;
+        this.isadult = isadult;
+        this.subscribeNews = subscribe_news;
+        this.activeCode = activeCode;
+        this.timeReg = timeReg;
+        this.timeVisit = timeVisit;
+        this.activeCodeExpiry = activeCodeExpiry;
+        this.emailActive = false;
     }
 
     public void setId(Long id) {
@@ -64,10 +86,38 @@ public class UserEntity implements UserDetails {
         this.roles = roles;
     }
 
+
+    public void setIsadult(boolean isadult) {
+        this.isadult = isadult;
+    }
+
+    public void setSubscribeNews(boolean s) {
+        this.subscribeNews = s;
+    }
+
+    public void setActiveCode(String code) {
+        this.activeCode = code;
+    }
+
+    public void setTimeReg(LocalDateTime timeReg) {
+        this.timeReg = timeReg;
+    }
+
+    public void setTimeVisit(LocalDateTime timeVisit) {
+        this.timeVisit = timeVisit;
+    }
+
+    public void setActiveCodeExpiry(LocalDateTime expiry) {
+        this.activeCodeExpiry = expiry;
+    }
+
+    public void setEmailActive(boolean a) {
+        this.emailActive = a;
+    }
+
     public void addRole(RoleEntity r) {
         this.roles.add(r);
     }
-    // Геттеры и сеттеры для id, username, password, roles
 
 
     @Override
@@ -82,8 +132,36 @@ public class UserEntity implements UserDetails {
         return password;
     }
 
+    public boolean getEmailActive() {
+        return emailActive;
+    }
+
     public String getEmail() {
         return email;
+    }
+
+    public String getActiveCode() {
+        return activeCode;
+    }
+
+    public LocalDateTime getTimeReg() {
+        return timeReg;
+    }
+
+    public LocalDateTime getTimeVisit() {
+        return timeVisit;
+    }
+
+    public LocalDateTime getActiveCodeExpiry() {
+        return activeCodeExpiry;
+    }
+
+    public boolean getIsadult() {
+        return isadult;
+    }
+
+    public boolean getSubscribeNews() {
+        return subscribeNews;
     }
 
     @Override

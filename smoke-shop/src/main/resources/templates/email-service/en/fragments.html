@@ -11,6 +11,7 @@
 
 <div th:fragment="footer (domain, email, adresse, contact_email, contact_tel,work_time,name_app)">
 <div class='footer'>
+<h5>Our shop</h5>
 <p>Adress: <span th:text="${adresse}"></span></p>
 <p>Email <a th:href="'mailto:' + ${contact_email}" th:text="${contact_email}"></a></p>
 <p>Tel: <a th:href="'tel:' + ${contact_tel}" th:text="${contact_tel}"></a></p>

@@ -31,7 +31,7 @@ public class EmailService {
     private String template;
     private String name_app, adresse, contact_email, contact_tel, work_t, send_mode;
     private DateData date;
-
+private ServerService server;
     public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine, LanguageResolver lang,
                         @Value("${spring.application.name}") String name_app, // имя приложения
                         @Value("${spring.email_service.adresse}") String adresse, // адрес магазина, если есть
@@ -39,7 +39,8 @@ public class EmailService {
                         @Value("${spring.email_service.contact_tel}") String contact_tel, // телефон для связи
                         @Value("${spring.email_service.work_time}") String work_t, // время работы
                         @Value("${spring.email_service.send_mode}") String send_mode, // тип  отправки
-                        DateData date // дата и время
+                        DateData date, // дата и время
+                        ServerService server // про сервер
     ) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
@@ -51,6 +52,7 @@ public class EmailService {
         this.work_t = work_t;
         this.send_mode = send_mode;
         this.date = date;
+        this.server = server;
     }
 
     /**
@@ -122,6 +124,7 @@ public class EmailService {
         context.setVariable("email", to); // email пользователя
         context.setVariable("work_time", work_time);
         context.setVariable("contact_tel", contact_tel);
+        context.setVariable("domain",server.getSite());
         if (vars != null) {
             for (Map.Entry<String, String> entry : vars.entrySet()) {
                 context.setVariable(entry.getKey(), entry.getValue());

@@ -33,29 +33,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        System.out.println("Старт фильтра");
         String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("Filter. Получен заголовок. " + authorizationHeader);
         String username = null;
         String jwt = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
-            System.out.println("Filter. Чистый заголовок. " + jwt);
             try {
                 username = jwtUtil.extractUsername(jwt);
-                System.out.println("filter. получено имя. " + username);
             } catch (Exception e) {
-                System.err.println("JWT extraction error: " + e.getMessage());
             }
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            System.out.println("Filter. Найдено в базе. " + userDetails.getUsername());
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
-                System.out.println("filter. токен валиден");
                 List<String> roles = jwtUtil.extractRoles(jwt);
                 Collection<? extends GrantedAuthority> authorities = roles.stream()
                         .map(role -> (GrantedAuthority) () -> role)
@@ -67,6 +60,5 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
-        System.out.println("Filter. конец");
     }
 }

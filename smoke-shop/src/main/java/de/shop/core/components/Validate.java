@@ -36,6 +36,14 @@ public class Validate {
         }
     }
 
+    public boolean checked(boolean b, String message) throws ValidateException {
+    if (!b) {
+        throw new ValidateException(message);
+    }
+    return true;
+    }
+
+
     /**
      * Метод выполняет проверку пароля перед изменением его или при регистрации
      *

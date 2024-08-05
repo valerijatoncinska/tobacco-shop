@@ -1,8 +1,10 @@
 package de.shop.modules.users.service;
 
 import de.shop.core.components.LanguageResolver;
-import de.shop.core.components.ResponseDto;
 import de.shop.core.exceptions.*;
+import de.shop.core.services.EmailService;
+import de.shop.core.services.RandomService;
+import de.shop.core.services.ServerService;
 import de.shop.modules.users.domain.dto.*;
 import de.shop.modules.users.domain.entity.RoleEntity;
 import de.shop.modules.users.domain.entity.UserEntity;
@@ -19,14 +21,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.naming.AuthenticationException;
-import java.security.SignatureException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -43,8 +45,11 @@ public class AuthorService implements Author {
     private AuthorMappingService map; // карта конвертации dto в entity
     private CustomDetailsService userDetailsService; // кастомный UserDetailsService
     private RoleRepository roleRepository; // репозиторий ролей
+    private EmailService mail;
+    private ServerService server;
+    private RandomService rand;
 
-    public AuthorService(BCryptPasswordEncoder passwordEncoder, LanguageResolver lang, UserRepository userRepository, AuthenticationManager manager, JwtUtil jwtUtil, AuthorMappingService map, CustomDetailsService userDetailsService, RoleRepository roleRepository) {
+    public AuthorService(BCryptPasswordEncoder passwordEncoder, LanguageResolver lang, UserRepository userRepository, AuthenticationManager manager, JwtUtil jwtUtil, AuthorMappingService map, CustomDetailsService userDetailsService, RoleRepository roleRepository, EmailService mail, ServerService server, RandomService rand) {
         this.passwordEncoder = passwordEncoder;
         this.lang = lang;
         this.userRepository = userRepository;
@@ -54,6 +59,9 @@ public class AuthorService implements Author {
         this.map = map;
         this.userDetailsService = userDetailsService;
         this.roleRepository = roleRepository;
+        this.mail = mail;
+        this.server = server;
+        this.rand = rand;
     }
 
     /**
@@ -63,9 +71,10 @@ public class AuthorService implements Author {
      * @return возвращает ResponseDto с вложенными данными
      * @throws RefreshTokenException перехвадчик ошибок
      */
-    public ResponseDto<?> refresh(InputRefreshTokenDto inputRefreshTokenDto) throws RefreshTokenException {
-        p = lang.load("users", "reg");
+    public OutputRefreshTokenDto refresh(InputRefreshTokenDto inputRefreshTokenDto) throws RefreshTokenException {
+        p = lang.load("users", "token");
         String refreshToken = inputRefreshTokenDto.getRefresh(); // входящий refresh token
+
         try {
             String username = jwtUtil.extractUsername(refreshToken);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -78,13 +87,13 @@ public class AuthorService implements Author {
                 outputRefreshTokenDto.setEmail(userDetails.getUsername());
                 outputRefreshTokenDto.setAccessToken(accessToken);
                 outputRefreshTokenDto.setRefreshToken(newRefreshToken);
-                return new ResponseDto(true, outputRefreshTokenDto, "ok", lang.getCurrentLang());
+                return outputRefreshTokenDto;
             } else {
                 throw new RefreshTokenException(((String) p.get("not.valid")));
             }
-        } catch (ExpiredJwtException e){
+        } catch (ExpiredJwtException e) {
             throw new RefreshTokenException(((String) p.get("not.valid")));
-        } catch(MalformedJwtException | UnsupportedJwtException e){
+        } catch (MalformedJwtException | UnsupportedJwtException e) {
             throw new RefreshTokenException(((String) p.get("not.valid")));
         }
 
@@ -100,8 +109,8 @@ public class AuthorService implements Author {
      * @throws LoginException              перехвадчик ошибок
      */
     @Override
-    public ResponseDto<?> login(InputLoginDto inputLoginDto) throws LoadUserByUsernameException, LoginException {
-        p = lang.load("users","author");
+    public OutputLoginDto login(InputLoginDto inputLoginDto) throws LoadUserByUsernameException, LoginException {
+        p = lang.load("users", "author");
         try {
 
             Authentication authentication = manager.authenticate(
@@ -113,7 +122,7 @@ public class AuthorService implements Author {
             String accessToken = jwtUtil.generateAccessToken(userDetails);
             String refreshToken = jwtUtil.generateRefreshToken(userDetails);
             OutputLoginDto outputLogin = new OutputLoginDto(userDetails.getUsername(), accessToken, refreshToken);
-            return new ResponseDto<>(true, outputLogin, "ok", lang.getCurrentLang());
+            return outputLogin;
         } catch (BadCredentialsException e) {
             throw new LoginException(((String) p.get("not.found")));
         }
@@ -129,20 +138,34 @@ public class AuthorService implements Author {
      * @throws DBException          перехват ошибок, связанный с базой
      */
     @Override
-    public ResponseDto<?> reg(InputRegDto ird) throws RegException, RegConflictException, DBException {
+    public OutputRegDto reg(InputRegDto ird) throws RegException, RegConflictException, DBException, UserSearchException {
+        Properties p = lang.load("users", "reg");
 // Далее нужно поискать пользователя в базе.
         if (userRepository.findByEmail(ird.getEmail()).isPresent()) {
             throw new RegConflictException(((String) p.get("user.conflict.reg")));
         }
         // поиск роли
         RoleEntity role = roleRepository.findByTitle("ROLE_USER").orElseThrow(() ->
-                new DBException(((String) p.get("role.notfound")))
+                new UserSearchException(((String) p.get("role.notfound")))
         );
 
 // конвертация из dto в entity
         UserEntity newUser = map.mapDtoToEntity(ird);
         newUser.addRole(role); // добавить роль к новому пользователю
+        // Если пользователей в базе нет, тогда первым будет админ.
+        if (userRepository.count() == 0) {
+            RoleEntity roleAdmin = roleRepository.findByTitle("ROLE_ADMIN").orElseThrow(() ->
+                    new UserSearchException(((String) p.get("role.notfound")))
+            );
+            newUser.addRole(roleAdmin); // добавили роль админа.
+        }
+        String uuid = rand.uuid(); // получаем uuid
         newUser.setPassword(passwordEncoder.encode(ird.getPassword())); // хэшируем пароль
+        newUser.setTimeReg(LocalDateTime.now()); // дата регистрации
+        newUser.setTimeVisit(LocalDateTime.now()); // последний визит
+        newUser.setActiveCode(uuid); // передали uuid в entity
+        newUser.setActiveCodeExpiry(LocalDateTime.now().plusDays(1)); // срок жизни активации
+
         try { // отправляем на регистрацию
             userRepository.save(newUser); // вносим в базу пользователя.
         } catch (DataAccessException e) {
@@ -150,8 +173,48 @@ public class AuthorService implements Author {
         }
         // Конвиртируем entity в dto
         OutputRegDto newUserSuccess = map.mapEntityToDto(newUser);
+        // Тут будет отправка email письма.
+        mail.setTemplate("reg-authen/reg-ok"); // Шаблон письма
+        Map<String, String> vars = new HashMap<>();
+        vars.put("link_active", server.getSite() + "/api/author/account-activate/" + uuid);
+        mail.send(ird.getEmail(), ((String) p.get("account.mail.reg")), "", vars);
+
+
         // возвращаем ответ.
-        return new ResponseDto<>(true, newUserSuccess, "ok", lang.getCurrentLang());
+        return newUserSuccess;
+    }
+
+
+    /**
+     * Метод, который подтверждает активацию аккаунта из ссылки электронного письма.
+     *
+     * @param uuid строка uuid
+     * @return вернет строку
+     * @throws UserSearchException отлов ошибок
+     * @throws DBException
+     */
+    public String accountActivate(String uuid) throws UserSearchException, DBException {
+        Properties p = lang.load("users", "activate");
+        // ищем аккаунт по uuid, который был выдан при регистрации
+        UserEntity r = userRepository.findByActiveCode(uuid).orElseThrow(() -> new UserSearchException("Аккаунт, для активации, не найден"));
+
+// Далее нужно узнать, не истек ли срок активации.
+        if (LocalDateTime.now().isAfter(r.getActiveCodeExpiry())) {
+            return ((String) p.get("error.time"));
+        }
+        // изменяем некоторые данные
+        r.setActiveCode(rand.uuid()); // Изменили uuid
+        r.setActiveCodeExpiry(LocalDateTime.now()); // изменили время активации
+        r.setEmailActive(true); // активировали аккаунт
+
+
+// редактируем данные аккаунта
+        try {
+            userRepository.save(r);
+            return ((String) p.get("activate.ok"));
+        } catch (DataAccessException e) {
+            throw new DBException(((String) p.get("error.db")));
+        }
     }
 
 
