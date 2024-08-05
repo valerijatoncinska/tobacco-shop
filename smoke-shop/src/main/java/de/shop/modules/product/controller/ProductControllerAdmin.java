@@ -24,7 +24,7 @@ public class ProductControllerAdmin {
 
     @PutMapping("{/id}")
     public void archiveById(@PathVariable Long id) {
-
+        service.archiveById(id);
     }
 
     @PutMapping("/{id}/restore")
