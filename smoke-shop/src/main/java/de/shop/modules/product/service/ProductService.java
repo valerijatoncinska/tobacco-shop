@@ -1,6 +1,5 @@
 package de.shop.modules.product.service;
 
-import de.shop.core.components.ResponseDto;
 import de.shop.modules.product.domain.dto.ProductDto;
 import de.shop.modules.product.domain.entity.ProductEntity;
 

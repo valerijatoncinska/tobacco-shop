@@ -1,7 +1,6 @@
 package de.shop.modules.product.service;
 
 import de.shop.core.components.LanguageResolver;
-import de.shop.core.components.ResponseDto;
 import de.shop.core.exceptions.ProductNotFoundException;
 import de.shop.core.exceptions.ProductNotSavedException;
 import de.shop.modules.product.domain.dto.ProductDto;
@@ -18,7 +17,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository repository;
     private final ProductMappingService mappingService;
-    private LanguageResolver lang;
+    private final LanguageResolver lang;
 
     public ProductServiceImpl(ProductRepository repository, ProductMappingService mappingService, LanguageResolver lang) {
         this.repository = repository;
@@ -82,8 +81,7 @@ public class ProductServiceImpl implements ProductService {
         if (!entity.isActive()) {
             throw new ProductNotFoundException(((String) p.get("product_not_active")));
         } else {
-            ProductDto dto = mappingService.mapEntityToDto(entity);
-            return dto;
+            return mappingService.mapEntityToDto(entity);
         }
     }
 
@@ -101,12 +99,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> findAllActiveProductsForUsers() {
-        List<ProductDto> foundProducts = repository.findAll()
+        return repository.findAll()
                 .stream()
                 .filter(ProductEntity::isActive)
                 .map(mappingService::mapEntityToDto)
                 .toList();
-        return foundProducts;
     }
 
     @Override

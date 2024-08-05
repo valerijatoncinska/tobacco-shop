@@ -2,7 +2,6 @@ package de.shop.modules.users.jwt;
 
 import de.shop.core.components.LanguageResolver;
 import de.shop.core.exceptions.AccessException;
-import de.shop.core.exceptions.DBException;
 import de.shop.core.exceptions.LoadUserByUsernameException;
 import de.shop.modules.users.domain.entity.UserEntity;
 import de.shop.modules.users.repository.interfaces.UserRepository;

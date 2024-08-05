@@ -3,7 +3,6 @@ package de.shop.core.components;
 import de.shop.core.exceptions.ValidateException;
 import org.springframework.stereotype.Component;
 
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,5 +92,4 @@ public class Validate {
             throw e;
         }
     }
-
 }
