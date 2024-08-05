@@ -42,13 +42,6 @@ try {
     repository.save(user);
 } catch (DataAccessException e) {
 }
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                user.getAuthorities()
-                );
-
-    }
+return new UserInfo(user);    }
 }
 
