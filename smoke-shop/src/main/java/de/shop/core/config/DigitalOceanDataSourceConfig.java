@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 @Profile("not_dev")
 public class DigitalOceanDataSourceConfig {
 
-    @Value("${DB_USERNAME}")
+    @Value("${DB_URL}")
     private String username;
 
     @Value("${DB_PASSWORD}")
