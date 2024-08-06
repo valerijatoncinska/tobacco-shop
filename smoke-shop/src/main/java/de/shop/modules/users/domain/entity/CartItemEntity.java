@@ -39,4 +39,11 @@ public int getQuantity() {
 public Long getUserId() {
 return (userEntity != null) ? userEntity.getId() : null;
 }
+public void setQuantity(int quantity) {
+        this.quantity = quantity;
 }
+public int getStock() {
+        return getProduct().getQuantity();
+}
+}
+

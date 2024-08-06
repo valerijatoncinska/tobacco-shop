@@ -12,8 +12,7 @@ import java.time.ZoneId;
 @Configuration
 public class TimeZoneConfig {
     private String idZone; // для id часового пояса
-//    public TimeZoneConfig(@Value("${spring.timezone.id}") String idZone) {
-    public TimeZoneConfig(@Value("Europe/Berlin") String idZone) {
+    public TimeZoneConfig(@Value("${spring.timezone.id}") String idZone) {
         this.idZone = idZone;
     }
 

@@ -26,11 +26,10 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
     private final ProductMappingService mappingService;
     private final LanguageResolver lang;
-    private UserProvider userProvider;
-    private CartItemRepository cartRepository;
-    private UserRepository userRepository;
-
-    public ProductServiceImpl(ProductRepository repository, ProductMappingService mappingService, LanguageResolver lang, UserProvider userProvider, CartItemRepository cartRepository, UserRepository userRepository) {
+private UserProvider userProvider;
+private CartItemRepository cartRepository;
+private UserRepository userRepository;
+    public ProductServiceImpl(ProductRepository repository, ProductMappingService mappingService, LanguageResolver lang,UserProvider userProvider,CartItemRepository cartRepository,UserRepository userRepository) {
         this.repository = repository;
         this.mappingService = mappingService;
         this.lang = lang;
@@ -42,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public OutputProductAdminDto save(InputProductDto inputDto) {
         Properties p = lang.load("product", "messages");
-        ProductEntity product = mappingService.mapDtoToEntity(inputDto);
+ProductEntity product = mappingService.mapDtoToEntity(inputDto);
 
         try {
             repository.save(product);
@@ -56,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void archiveById(Long id) {
         Properties p = lang.load("product", "messages");
-        ProductEntity entity = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(((String) p.get("product_not_found"))));
+        ProductEntity entity = repository.findById(id).orElseThrow( () -> new ProductNotFoundException(((String) p.get("product_not_found"))));
         if (entity.getActive()) {
             entity.setActive(false);
         } else {
@@ -128,36 +127,46 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .filter(ProductEntity::getActive)
                 .map(productEntity ->
-                        mappingService.mapEntityToDto(productEntity)
-                )
+        mappingService.mapEntityToDto(productEntity)
+                        )
                 .toList();
     }
-
-    public boolean addItemCart(Long id) throws CartItemException, UserSearchException {
+    public boolean addItemCart(Long id) throws CartItemException, UserSearchException{
         UserObject u = userProvider.getUserObject();
-        Optional<CartItemEntity> c = cartRepository.findByUserEntityIdAndProductEntityId(u.getId(), id);
-        if (c.isPresent()) {
+Optional<CartItemEntity> c = cartRepository.findByUserEntityIdAndProductEntityId(u.getId(),id);
+if (c.isPresent()) {
+    return false;
+}
+Optional<UserEntity> user = userRepository.findByEmail(u.getEmail());
+if (!user.isPresent()) {
+    throw new UserSearchException("Not found user");
+}
+Optional<ProductEntity> optionalProduct = repository.findById(id);
+if (!optionalProduct.isPresent()) {
+    throw new UserSearchException("not product");
+}
+ProductEntity product = optionalProduct.get();
+CartItemEntity cie = new CartItemEntity();
+cie.setUser(user.get());
+cie.setProduct(product);
+// Производим расчеты.
+        int productQuantity = product.getQuantity() - 1;
+        if (productQuantity<0) {
             return false;
         }
-        Optional<UserEntity> user = userRepository.findByEmail(u.getEmail());
-        if (!user.isPresent()) {
-            throw new UserSearchException("Not found user");
-        }
-        Optional<ProductEntity> product = repository.findById(id);
-        if (!product.isPresent()) {
-            throw new UserSearchException("not product");
-        }
-        CartItemEntity cie = new CartItemEntity();
-        cie.setUser(user.get());
-        cie.setProduct(product.get());
-        try {
-            cartRepository.save(cie);
-        } catch (DataAccessException e) {
-            throw new DBException("ups");
-        }
+        cie.setQuantity(1); // указали количество, которое должно быть в корзине.
+product.setQuantity(productQuantity); // указали, сколько товара осталось на складе.
+
+try {
+cartRepository.save(cie);
+repository.save(product);
+} catch (DataAccessException e) {
+    throw new DBException("ups");
+}
 
 
-        return true;
+
+    return true;
     }
 
 }

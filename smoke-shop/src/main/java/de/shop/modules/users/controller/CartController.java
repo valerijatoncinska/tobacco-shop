@@ -2,6 +2,7 @@ package de.shop.modules.users.controller;
 
 import de.shop.core.exceptions.UserSearchException;
 import de.shop.modules.users.domain.dto.CartDto;
+import de.shop.modules.users.domain.dto.InputCartQuantityDto;
 import de.shop.modules.users.service.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,19 @@ public class CartController {
         this.service = service;
     }
 
-    @DeleteMapping("/{id}/drop")
-    public ResponseEntity<?> delete(@PathVariable Long id) throws UserSearchException {
-        service.drop(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @PutMapping("/{id}")
+    public ResponseEntity<CartDto> cartQuantity(@PathVariable Long id, @RequestBody InputCartQuantityDto dto) {
+return ResponseEntity.ok(service.cartQuantity(id,dto));
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        if (service.drop(id) == true) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping

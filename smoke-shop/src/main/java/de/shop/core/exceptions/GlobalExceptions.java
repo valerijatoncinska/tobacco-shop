@@ -38,6 +38,7 @@ public class GlobalExceptions {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
     @ExceptionHandler(CartItemException.class)
     public ResponseEntity<?> cartItemException(CartItemException e) {
         ResponseError resp = new ResponseError(e.getMessage());
@@ -49,7 +50,17 @@ public class GlobalExceptions {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+    @ExceptionHandler(CartConflictException.class)
+    public ResponseEntity<?> cartConflictException(CartConflictException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        if (e.getMessage() != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(resp);
 
+        } else {
+
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
 
     @ExceptionHandler(AccessException.class)
     public ResponseEntity<?> accessException(AccessException e) {

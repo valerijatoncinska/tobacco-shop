@@ -20,10 +20,9 @@ import java.util.Properties;
 public class ProductControllerAdmin {
 
     private final ProductService service;
-    private LanguageResolver lang;
-    private Validate validate;
-
-    public ProductControllerAdmin(ProductService service, LanguageResolver lang, Validate validate) {
+private LanguageResolver lang;
+private Validate validate;
+    public ProductControllerAdmin(ProductService service,LanguageResolver lang,Validate validate) {
         {
             this.service = service;
             this.lang = lang;
@@ -34,12 +33,12 @@ public class ProductControllerAdmin {
     @PostMapping
     public OutputProductAdminDto save(@RequestBody InputProductDto product) {
         {
-            Properties p = lang.load("product", "messages");
-            validate.notBlank(product.getTitle(), ((String) p.get("notblank")));
-            validate.price(product.getPrice(), new BigDecimal(0), new BigDecimal(100000), ((String) p.get("price.validate")).replace("[min]", "0").replace("[max]", "100000"));
-            validate.minMax(product.getQuantity(), 0, 100000, ((String) p.get("quantity.validate")).replace("[min]", "0").replace("[max]", "100000"));
+            Properties p = lang.load("product","messages");
+validate.notBlank(product.getTitle(),((String) p.get("notblank")));
+validate.price(product.getPrice(),new BigDecimal(0),new BigDecimal(100000),((String) p.get("price.validate")).replace("[min]","0").replace("[max]","100000"));
+            validate.minMax(product.getQuantity(),0,100000,((String) p.get("quantity.validate")).replace("[min]","0").replace("[max]","100000"));
 
-            return service.save(product);
+             return service.save(product);
         }
     }
 
@@ -48,7 +47,7 @@ public class ProductControllerAdmin {
         service.archiveById(id);
     }
 
-    @PutMapping("/{id}/restorations")
+    @PutMapping("/{id}/restore")
     public ProductEntity restoreById(@PathVariable Long id) {
         return service.restoreById(id);
     }

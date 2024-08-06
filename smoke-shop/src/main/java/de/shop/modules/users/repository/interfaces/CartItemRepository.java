@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CartItemRepository extends JpaRepository<CartItemEntity, Long> {
-    List<CartItemEntity> findByUserEntityId(Long id);
-    Optional<CartItemEntity> findByUserEntityIdAndProductEntityId(Long user_id, Long product_id);
-    Optional<CartItemEntity> findById(Long id);
+    List<CartItemEntity> findByUserEntityId(Long id); // вернет список товаров в корзине
+    Optional<CartItemEntity> findByUserEntityIdAndProductEntityId(Long user_id, Long product_id); // находит товары по пользователю  и продукту
+    Optional<CartItemEntity> findById(Long id); // находит элемент корзины
 }

@@ -29,8 +29,8 @@ public class ProductEntity {
 
     @Column(name = "quantity")
     private int quantity;
-    @OneToMany(mappedBy = "productEntity")
-    private Set<CartItemEntity> cartEntity;
+@OneToMany(mappedBy = "productEntity")
+private Set<CartItemEntity> cartEntity;
 
     @Override
     public boolean equals(Object o) {
