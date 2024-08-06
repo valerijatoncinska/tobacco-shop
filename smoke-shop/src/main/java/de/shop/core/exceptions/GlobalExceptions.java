@@ -15,48 +15,59 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptions {
     private LanguageResolver lang; // класс мультиязычности
+
     public GlobalExceptions(LanguageResolver lang) {
         this.lang = lang;
     }
+
     @ExceptionHandler(EmailServiceException.class)
     public ResponseEntity<?> emailServiceException(EmailServiceException e) {
         ResponseError resp = new ResponseError(e.getMessage());
-        System.out.println("503 - Service Unavailable \n "+resp.getMessage());
+        System.out.println("503 - Service Unavailable \n " + resp.getMessage());
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
     }
 
     @ExceptionHandler(UserSearchException.class)
     public ResponseEntity<?> userSearchException(UserSearchException e) {
         ResponseError resp = new ResponseError(e.getMessage());
-        if (e.getMessage()!=null) {
+        if (e.getMessage() != null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
 
+        } else {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        else {
+    }
+    @ExceptionHandler(CartItemException.class)
+    public ResponseEntity<?> cartItemException(CartItemException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        if (e.getMessage() != null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+
+        } else {
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
+
     @ExceptionHandler(AccessException.class)
     public ResponseEntity<?> accessException(AccessException e) {
         ResponseError resp = new ResponseError(e.getMessage());
-        if (e.getMessage()!=null) {
+        if (e.getMessage() != null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resp);
 
-        }
-        else {
+        } else {
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
 
-
     @ExceptionHandler(JwtUtilException.class)
     public ResponseEntity<?> jwtUtilException(JwtUtilException e) {
         ResponseError resp = new ResponseError(e.getMessage());
-System.out.println("401 - Unauthorized \n "+resp.getMessage()+" \n");
+        System.out.println("401 - Unauthorized \n " + resp.getMessage() + " \n");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
@@ -64,7 +75,7 @@ System.out.println("401 - Unauthorized \n "+resp.getMessage()+" \n");
     @ExceptionHandler(RefreshTokenException.class)
     public ResponseEntity<?> refreshTokenException(RefreshTokenException e) {
         ResponseError resp = new ResponseError(e.getMessage());
-        System.out.println("401 - Unauthorized \n "+resp.getMessage()+" \n");
+        System.out.println("401 - Unauthorized \n " + resp.getMessage() + " \n");
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
@@ -78,7 +89,7 @@ System.out.println("401 - Unauthorized \n "+resp.getMessage()+" \n");
     @ExceptionHandler(RegException.class)
     public ResponseEntity<?> regException(RegException e) {
         ResponseError resp = new ResponseError(e.getMessage());
-        System.out.println("500 - internal server error \n "+resp.getMessage()+" \n");
+        System.out.println("500 - internal server error \n " + resp.getMessage() + " \n");
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
@@ -86,7 +97,7 @@ System.out.println("401 - Unauthorized \n "+resp.getMessage()+" \n");
     @ExceptionHandler(DBException.class)
     public ResponseEntity<?> dbException(DBException e) {
         ResponseError resp = new ResponseError(e.getMessage());
-        System.out.println("500 - internal server error \n "+resp.getMessage()+" \n");
+        System.out.println("500 - internal server error \n " + resp.getMessage() + " \n");
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
@@ -122,8 +133,29 @@ System.out.println("401 - Unauthorized \n "+resp.getMessage()+" \n");
     @ExceptionHandler(ParsePropertiesException.class)
     public ResponseEntity<?> parsePropertiesException(ParsePropertiesException e) {
         ResponseError resp = new ResponseError(e.getMessage());
-        System.out.println("500 - internal server error#\n "+resp.getMessage()+ " \n");
+        System.out.println("500 - internal server error#\n " + resp.getMessage() + " \n");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<?> productNotFoundException(ProductNotFoundException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler(ProductNotSavedException.class)
+    public ResponseEntity<?> productNotSavedException(ProductNotSavedException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
+    }
+
+    @ExceptionHandler(ProductAlreadyNotActiveException.class)
+    public ResponseEntity<?> productAlreadyNotActiveException(ProductAlreadyNotActiveException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
+    }
+
 
 }

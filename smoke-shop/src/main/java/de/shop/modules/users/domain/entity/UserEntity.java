@@ -53,6 +53,10 @@ public class UserEntity implements UserDetails {
     )
     private Set<RoleEntity> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "userEntity")
+    private Set<CartItemEntity> cartItemEntity;
+
+
     public UserEntity() {
 
     }

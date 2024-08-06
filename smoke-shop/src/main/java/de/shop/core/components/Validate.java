@@ -3,6 +3,7 @@ package de.shop.core.components;
 import de.shop.core.exceptions.ValidateException;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +17,40 @@ public class Validate {
     public Validate() {
     }
 
+    /**
+     * Метод, который проверяет, а корректно ли введена цена
+     * @param price   цена.
+     * @param min     минимальный порог
+     * @param max максимальный порог
+     * @param message сообщение ошибки
+     * @return возвращает boolean
+     * @throws ValidateException отлов ошибок
+     */
+    public boolean price(BigDecimal price,BigDecimal min, BigDecimal max,String message) throws ValidateException {
+        boolean a = (price.compareTo(min)>0 && price.compareTo(max)<0);
+        if (a==false) {
+throw new ValidateException(message);
+        }
+        return true;
+}
+
+    /**
+     * Метод, который проверяет корректность на минимальное и максимальное значение
+     * @param p       Число
+     * @param min     минимальное значение
+     * @param max      максимальное значение
+     * @param message   сообщение о ошибке
+     * @return возвращает boolean
+     * @throws ValidateException отлов ошибок
+     */
+    public boolean minMax(int p,int min,int max,String message) throws ValidateException {
+        if (p>min && p<max) {
+            return true;
+        }
+        else {
+throw new ValidateException(message);
+        }
+}
 
     /**
      * Метод проверяет строку на пустоту

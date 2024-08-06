@@ -1,11 +1,13 @@
 package de.shop.modules.product.domain.entity;
 
 
+import de.shop.modules.users.domain.entity.CartItemEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "product")
@@ -16,34 +18,19 @@ public class ProductEntity {
     @Column(name = "id")
     private Long id;
 
-    @NotNull(message = "Title cannot be null")
-    @NotBlank(message = "Title cannot be empty")
-    @Pattern(
-            regexp = "[A-Z][a-z ]{2,}",
-            message = "Title should contain at least 3 characters " +
-                    "and start with capital letter/."
-    )
     @Column(name = "title")
     private String title;
 
-    @DecimalMin(
-            value = "5.00",
-            message = "Product price should be greater or equal than 5.00"
-    )
-    @DecimalMax(
-            value = "100000.00",
-            inclusive = false,
-            message = "Product price should be lesser than 100000.00"
-    )
     @Column(name = "price")
     private BigDecimal price;
 
     @Column(name = "active")
     private boolean active;
 
-    @Min(0)
     @Column(name = "quantity")
     private int quantity;
+@OneToMany(mappedBy = "productEntity")
+private Set<CartItemEntity> cartEntity;
 
     @Override
     public boolean equals(Object o) {
@@ -84,7 +71,7 @@ public class ProductEntity {
         return price;
     }
 
-    public boolean isActive() {
+    public boolean getActive() {
         return active;
     }
 

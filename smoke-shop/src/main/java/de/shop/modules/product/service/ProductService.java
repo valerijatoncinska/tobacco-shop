@@ -1,14 +1,14 @@
 package de.shop.modules.product.service;
 
-import de.shop.core.components.ResponseDto;
-import de.shop.modules.product.domain.dto.ProductDto;
+import de.shop.modules.product.domain.dto.InputProductDto;
+import de.shop.modules.product.domain.dto.OutputProductAdminDto;
 import de.shop.modules.product.domain.entity.ProductEntity;
 
 import java.util.List;
 
 public interface ProductService {
 
-    ProductEntity save(ProductEntity product);
+    OutputProductAdminDto save(InputProductDto product);
 
     void archiveById(Long id);
 
@@ -16,12 +16,12 @@ public interface ProductService {
 
     ProductEntity update(ProductEntity entity);
 
-    ProductDto findByIdForUser(Long id);
+    OutputProductAdminDto findByIdForUser(Long id);
 
     ProductEntity findByIdForAdmin(Long id);
 
-    List<ProductEntity> findAllActiveProductsForAdmin();
+    List<OutputProductAdminDto> findAllActiveProductsForAdmin();
 
-    List<ProductDto> findAllActiveProductsForUsers();
+    List<OutputProductAdminDto> findAllActiveProductsForUsers();
 
 }
