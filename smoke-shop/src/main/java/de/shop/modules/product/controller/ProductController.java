@@ -22,7 +22,7 @@ private ProductServiceImpl serviceImpl;
         this.serviceImpl = serviceImpl;
     }
 // Добавляем в корзину продукт.
-    @PostMapping("/{id}/add")
+    @PostMapping("/{id}")
     public ResponseEntity<?> addToCart(@PathVariable Long id) {
         boolean n = serviceImpl.addItemCart(id);
 if (n==true) {

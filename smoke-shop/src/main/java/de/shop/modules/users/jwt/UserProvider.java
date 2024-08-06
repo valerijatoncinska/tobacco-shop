@@ -1,8 +1,6 @@
 package de.shop.modules.users.jwt;
 
 import de.shop.modules.users.domain.entity.UserEntity;
-import de.shop.modules.users.jwt.UserObject;
-import de.shop.modules.users.jwt.UserInfo;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

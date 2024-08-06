@@ -47,7 +47,7 @@ validate.price(product.getPrice(),new BigDecimal(0),new BigDecimal(100000),((Str
         service.archiveById(id);
     }
 
-    @PutMapping("/{id}/restore")
+    @PutMapping("/{id}/restoration")
     public ProductEntity restoreById(@PathVariable Long id) {
         return service.restoreById(id);
     }
