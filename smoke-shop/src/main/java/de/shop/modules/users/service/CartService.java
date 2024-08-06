@@ -22,12 +22,7 @@ this.cartRepository = cartRepository;
 this.userProvider = userProvider;
 }
 public void drop(Long id) throws UserSearchException  {
-    // Ищим продукт.
-    Optional<CartItemEntity> c = cartRepository.findById(id);
-    if (!c.isPresent()) {
-        throw new UserSearchException("not.user");
-    }
-
+cartRepository.deleteById(id);
 }
 public List<CartDto> list() {
     UserObject u = userProvider.getUserObject();

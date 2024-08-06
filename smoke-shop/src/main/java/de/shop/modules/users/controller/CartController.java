@@ -3,6 +3,8 @@ package de.shop.modules.users.controller;
 import de.shop.core.exceptions.UserSearchException;
 import de.shop.modules.users.domain.dto.CartDto;
 import de.shop.modules.users.service.CartService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +20,10 @@ public class CartController {
         this.service = service;
     }
 
-    @DeleteMapping("/{id}/deletion")
-    public void delete(@PathVariable Long id) throws UserSearchException {
+    @DeleteMapping("/{id}/drop")
+    public ResponseEntity<?> delete(@PathVariable Long id) throws UserSearchException {
         service.drop(id);
-
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping
