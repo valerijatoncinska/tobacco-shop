@@ -16,7 +16,7 @@ import java.util.Properties;
 
 @RestController
 @RequestMapping("/admin/products")
-//@Secured("ROLE_ADMIN")
+@Secured("ROLE_ADMIN")
 public class ProductControllerAdmin {
 
     private final ProductService service;
