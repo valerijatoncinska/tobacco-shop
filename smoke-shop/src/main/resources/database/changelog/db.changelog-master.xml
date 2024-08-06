@@ -16,6 +16,4 @@
     <include file="v0.9.0/changelog.xml" relativeToChangelogFile="true"/>
 
 
-
-
 </databaseChangeLog>

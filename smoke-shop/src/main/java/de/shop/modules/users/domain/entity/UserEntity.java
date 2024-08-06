@@ -37,11 +37,11 @@ public class UserEntity implements UserDetails {
     private boolean subscribeNews;
     @Column(name = "active_code")
     private String activeCode;
-    @Column(name = "time_reg")
+    @Column(name = "time_reg", nullable = false)
     private LocalDateTime timeReg;
-    @Column(name = "time_visit")
+    @Column(name = "time_visit", nullable = false)
     private LocalDateTime timeVisit;
-    @Column(name = "active_code_expiry")
+    @Column(name = "active_code_expiry", nullable = false)
     private LocalDateTime activeCodeExpiry;
     @Column(name = "email_active")
     private boolean emailActive;

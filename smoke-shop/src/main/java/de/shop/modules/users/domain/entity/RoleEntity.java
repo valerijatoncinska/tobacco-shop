@@ -16,21 +16,23 @@ public class RoleEntity implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-            private Long id;
-            @Column(nullable = false, unique = true)
-            private String title;
+    private Long id;
+    @Column(nullable = false, unique = true)
+    private String title;
 
-            public RoleEntity(String title) {
+    public RoleEntity(String title) {
         this.title = title;
     }
 
     public RoleEntity() {
 
     }
-@Override
-public String getAuthority() {
-                return title;
-}
+
+    @Override
+    public String getAuthority() {
+        return title;
+    }
+
     public String getTitle() {
         return title;
     }
