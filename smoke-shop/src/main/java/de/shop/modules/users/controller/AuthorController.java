@@ -81,7 +81,7 @@ public class AuthorController {
      * @param uuid часть url, которая содержит уникальный ключ для активации
      * @return возвращает строковое значение
      */
-    @GetMapping("/account-activate/{uuid}")
+    @GetMapping("/account-activation/{uuid}")
     public String accountActivate(@PathVariable String uuid) {
         return service.accountActivate(uuid);
     }
