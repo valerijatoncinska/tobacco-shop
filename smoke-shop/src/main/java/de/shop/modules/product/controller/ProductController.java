@@ -16,22 +16,24 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService service;
-private ProductServiceImpl serviceImpl;
-    public ProductController(ProductService service,ProductServiceImpl serviceImpl) {
+    private ProductServiceImpl serviceImpl;
+
+    public ProductController(ProductService service, ProductServiceImpl serviceImpl) {
         this.service = service;
         this.serviceImpl = serviceImpl;
     }
-// Добавляем в корзину продукт.
-    @PostMapping("/{id}")
+
+    // Добавляем в корзину продукт.
+    @PostMapping("/{id}/addition-to-cart")
     public ResponseEntity<?> addToCart(@PathVariable Long id) {
         boolean n = serviceImpl.addItemCart(id);
-if (n==true) {
-    return ResponseEntity.ok("ok");
-}
-else {
-    return ResponseEntity.status(HttpStatus.CONFLICT).build();
-}
+        if (n == true) {
+            return ResponseEntity.ok("ok");
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
+
     @GetMapping("/{id}")
 
     public OutputProductAdminDto findByIdForUser(@PathVariable Long id) {
