@@ -39,12 +39,15 @@ public class SecurityConfig {
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
+    @Bean
     // Это нужно для работы QA и для корректной работы сваггера с разными ролями, если есть причина это удалять - сообщите
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("My API")
-                        .version("1.0")
-                        .description("My API description"));
+                .info(new Info().title("JavaInUse Authentication Service"))
+                .addSecurityItem(new SecurityRequirement().addList("JavaInUseSecurityScheme"))
+                .components(new Components().addSecuritySchemes("JavaInUseSecurityScheme", new SecurityScheme()
+                        .name("JavaInUseSecurityScheme").type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
+
     }
 
     @Bean
