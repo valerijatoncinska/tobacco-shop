@@ -6,6 +6,7 @@ import de.shop.modules.product.repository.interfaces.ProductRepository;
 import de.shop.modules.product.service.ProductServiceImpl;
 import de.shop.modules.users.domain.dto.CartDto;
 import de.shop.modules.users.domain.dto.InputCartQuantityDto;
+import de.shop.modules.users.domain.dto.OutputCartDto;
 import de.shop.modules.users.domain.entity.CartItemEntity;
 import de.shop.modules.users.jwt.UserObject;
 import de.shop.modules.users.jwt.UserProvider;
@@ -13,8 +14,10 @@ import de.shop.modules.users.repository.interfaces.CartItemRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class CartService {
@@ -27,7 +30,9 @@ public class CartService {
         this.userProvider = userProvider;
         this.productRepository = productRepository;
     }
-
+public boolean clear() {
+        return true;
+}
     public CartDto cartQuantity(Long id, InputCartQuantityDto dto) throws CartItemException, CartConflictException {
         Optional<CartItemEntity> optional = cartRepository.findById(id);
         if (!optional.isPresent()) {
@@ -38,24 +43,26 @@ public class CartService {
         // вытягиваем сам продукт.
         ProductEntity product = cartItemEntity.getProduct();
         int stock, quantity;
+
         if (dto.getType().equals("plus")) {
             stock = product.getQuantity() - 1; // отнимаем от продукта на складе.
-            quantity = cartItemEntity.getQuantity() + 1; // добавили товар в корзину
-        }
-        else {
+            quantity = cartItemEntity.getQuantity() + 1; // добавили товар в корзин
+            // у
+        } else {
             stock = product.getQuantity() + 1; // отнимаем от продукта на складе.
             quantity = cartItemEntity.getQuantity() - 1; // добавили товар в корзину
         }
-if (stock<0) {
-    throw new CartConflictException("not product");
-}
+        if (stock < 0) {
+            throw new CartConflictException("not product");
+        }
 // остановим код, если мы пытаемся сделать ноль товара
-if (quantity<1) {
-    throw new CartConflictException("error");
-}
-product.setQuantity(stock); // Записали количество на складе.
+        if (quantity < 1) {
+            throw new CartConflictException("error");
+        }
+        product.setQuantity(stock); // Записали количество на складе.
         cartItemEntity.setQuantity(quantity); // Записали количество в элемент корзины.
-
+BigDecimal q = BigDecimal.valueOf(quantity);
+BigDecimal price = product.getPrice().multiply(q);
 // далее вписываем данные.
         try {
             productRepository.save(product);
@@ -65,8 +72,8 @@ product.setQuantity(stock); // Записали количество на скл
             cartDto.setTitle(product.getTitle());
             cartDto.setStock(product.getQuantity());
             cartDto.setQuantity(cartItemEntity.getQuantity());
-cartDto.setProductId(product.getId());
-cartDto.setPrice(product.getPrice());
+            cartDto.setProductId(product.getId());
+            cartDto.setPrice(price);
             return cartDto;
         } catch (DataAccessException e) {
             throw new DBException("error");
@@ -94,9 +101,11 @@ cartDto.setPrice(product.getPrice());
         return true;
     }
 
-    public List<CartDto> list() {
+    public OutputCartDto list() {
         UserObject u = userProvider.getUserObject();
-        return cartRepository.findByUserEntityId(u.getId()).stream()
+        OutputCartDto outputCartDto = new OutputCartDto();
+        AtomicReference<BigDecimal> money = new AtomicReference<>(BigDecimal.ZERO);
+        List<CartDto> l = cartRepository.findByUserEntityId(u.getId()).stream()
                 .map(cartItemEntity -> {
                     CartDto cart = new CartDto();
                     cart.setId(cartItemEntity.getId());
@@ -105,10 +114,16 @@ cartDto.setPrice(product.getPrice());
                     ProductEntity p = cartItemEntity.getProduct();
                     cart.setTitle(p.getTitle());
                     cart.setProductId(p.getId());
-cart.setPrice(p.getPrice());
+                    BigDecimal q = BigDecimal.valueOf(cartItemEntity.getQuantity());
+                     BigDecimal total = p.getPrice().multiply(q);
+                    money.updateAndGet(m -> m.add(total));
+                    cart.setPrice(total);
                     return cart;
                 })
                 .toList();
+        outputCartDto.addData("total", money);
+        outputCartDto.addProducts(l);
+        return outputCartDto;
     }
 
 

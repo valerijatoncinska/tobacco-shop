@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
-@Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class ProductController {
 
     private final ProductService service;
@@ -25,6 +24,8 @@ public class ProductController {
 
     // Добавляем в корзину продукт.
     @PostMapping("/{id}/addition-to-cart")
+@Secured({"ROLE_USER", "ROLE_ADMIN"})
+
     public ResponseEntity<?> addToCart(@PathVariable Long id) {
         boolean n = serviceImpl.addItemCart(id);
         if (n == true) {
