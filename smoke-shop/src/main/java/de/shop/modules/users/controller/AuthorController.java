@@ -5,7 +5,10 @@ import de.shop.core.components.Validate;
 import de.shop.modules.users.domain.dto.InputLoginDto;
 import de.shop.modules.users.domain.dto.InputRefreshTokenDto;
 import de.shop.modules.users.domain.dto.InputRegDto;
+import de.shop.modules.users.domain.dto.OutputLoginDto;
 import de.shop.modules.users.service.AuthorService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,13 +52,37 @@ public class AuthorController {
      * @return возвращает ResponseEntity с вложенным ResponseDto
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody InputLoginDto inputLoginDto) {
+    public ResponseEntity<?> login(@RequestBody InputLoginDto inputLoginDto, HttpServletResponse response) {
         Properties p = lang.load("users", "reg");
         validate.email(inputLoginDto.getEmail(), ((String) p.get("validate.email")).replace("[column]", "email"));
         validate.notBlank(inputLoginDto.getPassword(), ((String) p.get("empty.column")).replace("[column]", "password"));
 
+        OutputLoginDto tokenDto = service.login(inputLoginDto);
+
+        Cookie cookieAccess = new Cookie("ACCESS_TOKEN", tokenDto.getAccessToken());
+        cookieAccess.setPath("/");
+        cookieAccess.setHttpOnly(true);
+        response.addCookie(cookieAccess);
+        Cookie cookieRefresh = new Cookie("REFRESH_TOKEN", tokenDto.getRefreshToken());
+        cookieRefresh.setPath("/");
+        cookieRefresh.setHttpOnly(true);
+        response.addCookie(cookieRefresh);
+
         return ResponseEntity.ok(service.login(inputLoginDto));
 
+    }
+
+    @GetMapping("/logout")
+    public void logout(HttpServletResponse response) {
+        removeCookie(response);
+    }
+
+    private void removeCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("ACCESS_TOKEN", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
     /**
