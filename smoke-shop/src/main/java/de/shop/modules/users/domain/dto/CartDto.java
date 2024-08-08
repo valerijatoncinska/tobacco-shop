@@ -6,9 +6,16 @@ public class CartDto {
     private Long id;
     private String title;
     private BigDecimal price;
+    private BigDecimal totalPrice;
     private int quantity;
 private int stock;
 private Long productId;
+public void setTotalPrice(BigDecimal totalPrice) {
+    this.totalPrice = totalPrice;
+}
+public BigDecimal getTotalPrice() {
+    return totalPrice;
+}
     public void setTitle(String title) {
         this.title = title;
     }

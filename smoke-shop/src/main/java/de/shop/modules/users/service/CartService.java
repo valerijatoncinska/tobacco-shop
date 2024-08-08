@@ -1,6 +1,8 @@
 package de.shop.modules.users.service;
 
-import de.shop.core.exceptions.*;
+import de.shop.core.exceptions.CartConflictException;
+import de.shop.core.exceptions.CartItemException;
+import de.shop.core.exceptions.DBException;
 import de.shop.modules.product.domain.entity.ProductEntity;
 import de.shop.modules.product.repository.interfaces.ProductRepository;
 import de.shop.modules.users.domain.dto.CartDto;
@@ -10,6 +12,7 @@ import de.shop.modules.users.domain.entity.CartItemEntity;
 import de.shop.modules.users.jwt.UserObject;
 import de.shop.modules.users.jwt.UserProvider;
 import de.shop.modules.users.repository.interfaces.CartItemRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -29,9 +32,19 @@ public class CartService {
         this.userProvider = userProvider;
         this.productRepository = productRepository;
     }
-public boolean clear() {
+
+    @Transactional
+    public boolean clear() {
+        UserObject u = userProvider.getUserObject();
+        List<CartItemEntity> c = cartRepository.findByUserEntityId(u.getId());
+        for (CartItemEntity cart : c) {
+            if (!drop(cart.getId())) {
+                return false;
+            }
+        }
         return true;
-}
+    }
+
     public CartDto cartQuantity(Long id, InputCartQuantityDto dto) throws CartItemException, CartConflictException {
         Optional<CartItemEntity> optional = cartRepository.findById(id);
         if (!optional.isPresent()) {
@@ -60,8 +73,8 @@ public boolean clear() {
         }
         product.setQuantity(stock); // Записали количество на складе.
         cartItemEntity.setQuantity(quantity); // Записали количество в элемент корзины.
-BigDecimal q = BigDecimal.valueOf(quantity);
-BigDecimal price = product.getPrice().multiply(q);
+        BigDecimal q = BigDecimal.valueOf(quantity);
+        BigDecimal price = product.getPrice().multiply(q);
 // далее вписываем данные.
         try {
             productRepository.save(product);
@@ -72,7 +85,8 @@ BigDecimal price = product.getPrice().multiply(q);
             cartDto.setStock(product.getQuantity());
             cartDto.setQuantity(cartItemEntity.getQuantity());
             cartDto.setProductId(product.getId());
-            cartDto.setPrice(price);
+            cartDto.setTotalPrice(price);
+            cartDto.setPrice(product.getPrice());
             return cartDto;
         } catch (DataAccessException e) {
             throw new DBException("error");
@@ -113,10 +127,11 @@ BigDecimal price = product.getPrice().multiply(q);
                     ProductEntity p = cartItemEntity.getProduct();
                     cart.setTitle(p.getTitle());
                     cart.setProductId(p.getId());
+                    cart.setPrice(p.getPrice());
                     BigDecimal q = BigDecimal.valueOf(cartItemEntity.getQuantity());
-                     BigDecimal total = p.getPrice().multiply(q);
+                    BigDecimal total = p.getPrice().multiply(q);
                     money.updateAndGet(m -> m.add(total));
-                    cart.setPrice(total);
+                    cart.setTotalPrice(total);
                     return cart;
                 })
                 .toList();
