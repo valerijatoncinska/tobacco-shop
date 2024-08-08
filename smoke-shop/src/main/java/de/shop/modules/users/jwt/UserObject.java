@@ -18,5 +18,8 @@ public class UserObject {
 
     public String getEmail() {
         return email;
+
+
     }
 }
+

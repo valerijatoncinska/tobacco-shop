@@ -3,7 +3,7 @@ package de.shop.modules.product.domain.dto;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class OutputProductDto {
+public class OutputProductUserDto {
 
     private Long id;
     private String title;

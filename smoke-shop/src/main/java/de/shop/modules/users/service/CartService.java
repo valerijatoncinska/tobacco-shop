@@ -3,7 +3,6 @@ package de.shop.modules.users.service;
 import de.shop.core.exceptions.*;
 import de.shop.modules.product.domain.entity.ProductEntity;
 import de.shop.modules.product.repository.interfaces.ProductRepository;
-import de.shop.modules.product.service.ProductServiceImpl;
 import de.shop.modules.users.domain.dto.CartDto;
 import de.shop.modules.users.domain.dto.InputCartQuantityDto;
 import de.shop.modules.users.domain.dto.OutputCartDto;
