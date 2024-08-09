@@ -1,11 +1,8 @@
 package de.shop.core.config;
 
 import de.shop.modules.users.jwt.JwtRequestFilter;
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -40,14 +37,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    // Это нужно для работы QA и для корректной работы сваггера с разными ролями, если есть причина это удалять - сообщите
+    /*
+     * Метод, для swagger
+     */
+
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("JavaInUse Authentication Service"))
-                .addSecurityItem(new SecurityRequirement().addList("JavaInUseSecurityScheme"))
-                .components(new Components().addSecuritySchemes("JavaInUseSecurityScheme", new SecurityScheme()
-                        .name("JavaInUseSecurityScheme").type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
-
+                .info(new Info()
+                        .title("My API")
+                        .version("1.0")
+                        .description("My API description"));
     }
 
     @Bean
@@ -76,7 +75,7 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.GET,"/email/**").permitAll()
 //                        .requestMatchers("swagger-ui.html", "v3/api-docs/**", "swagger-ui/**").permitAll()
 //                        .anyRequest().authenticated()
-//                                 .requestMatchers(HttpMethod.GET,"/user/**").hasAuthority("ROLE_USER")
+                                // .requestMatchers(HttpMethod.GET,"/user/**").hasAuthority("ROLE_USER")
                         .anyRequest().permitAll()
                 );
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

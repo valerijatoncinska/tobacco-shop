@@ -158,7 +158,7 @@ public class GlobalExceptions {
     public ResponseEntity<?> productNotSavedException(ProductNotSavedException e) {
         ResponseError resp = new ResponseError(e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resp);
     }
 
     @ExceptionHandler(ProductAlreadyNotActiveException.class)

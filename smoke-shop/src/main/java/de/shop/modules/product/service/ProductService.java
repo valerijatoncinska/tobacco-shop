@@ -15,7 +15,10 @@ import de.shop.modules.users.jwt.UserObject;
 import de.shop.modules.users.jwt.UserProvider;
 import de.shop.modules.users.repository.interfaces.CartItemRepository;
 import de.shop.modules.users.repository.interfaces.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,20 +43,76 @@ public class ProductService {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
     }
-
+@Transactional
+    public boolean dropProduct(Long id) throws ProductNotFoundException {
+        Optional<ProductEntity> p = repository.findById(id);
+        if (!p.isPresent()) {
+            throw new ProductNotFoundException("not found");
+        }
+        try {
+            cartRepository.deleteByProductEntity_Id(id);
+            repository.deleteById(id);
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+System.out.println("NOT PRODUCT DELETED: "+e.getMessage());
+return false;
+        } catch (DataIntegrityViolationException e) {
+System.out.println("Нарушается целостность. удаление продукта отклонено "+e.getMessage());
+return false;
+        } catch (IllegalArgumentException e) {
+System.out.println("Проблема с JPA "+e.getMessage());
+return false;
+        }
+    }
+    public OutputDto productInfo(Long id) throws ProductNotFoundException {
+        UserObject u = userProvider.getUserObject();
+        Optional<ProductEntity> p = repository.findById(id);
+        if (!p.isPresent()) {
+            throw new ProductNotFoundException(" not found");
+        }
+        ProductEntity product = p.get();
+        OutputDto outputDto = new OutputDto();
+        if (userProvider.role("ROLE_ADMIN")) {
+            OutputProductAdminDto outputProductAdminDto = mappingService.mapEntityToAdminDto(product);
+            outputDto.setData(outputProductAdminDto);
+        } else {
+            OutputProductUserDto outputProductUserDto = mappingService.mapEntityToUserDto(product);
+            outputDto.setData(outputProductUserDto);
+        }
+        return outputDto;
+    }
 
     public OutputProductAdminDto save(InputProductDto inputDto) {
-        Properties p = lang.load("product", "messages");
+        Properties p = lang.load("products", "messages");
         ProductEntity product = mappingService.mapDtoToEntity(inputDto);
 
         try {
             repository.save(product);
         } catch (Exception e) {
-            throw new ProductNotSavedException(((String) p.get("product_not_saved")));
+            throw new ProductNotSavedException(((String) p.get("product.not.saved")));
         }
         OutputProductAdminDto prod = mappingService.mapEntityToAdminDto(product);
         return prod;
     }
+
+    public OutputProductAdminDto updateProduct(Long id, InputProductDto inputDto) throws ProductNotFoundException {
+        Properties p = lang.load("products", "messages");
+        Optional<ProductEntity> pe = repository.findById(id);
+        if (!pe.isPresent()) {
+            throw new ProductNotFoundException("Not found");
+        }
+        ProductEntity productDb = pe.get();
+        ProductEntity product = mappingService.mapDtoToEntity(inputDto);
+        product.setId(productDb.getId());
+        try {
+            repository.save(product);
+        } catch (Exception e) {
+            throw new ProductNotSavedException(((String) p.get("product.not.saved")));
+        }
+        OutputProductAdminDto prod = mappingService.mapEntityToAdminDto(product);
+        return prod;
+    }
+
 
     public void archiveById(Long id) {
         Properties p = lang.load("product", "messages");
@@ -97,6 +156,7 @@ public class ProductService {
                 )
                 .toList();
     }
+
     private List<OutputProductAdminDto> productsForAdmin() {
         return repository.findAll()
                 .stream()
