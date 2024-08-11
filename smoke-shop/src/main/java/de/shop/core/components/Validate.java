@@ -128,5 +128,13 @@ throw new ValidateException(message);
             throw e;
         }
     }
+public boolean postalCode(String code,String message) throws ValidateException {
+        int c = Integer.parseInt(code);
+        if (c<1067 || c>99998) {
+throw new ValidateException(message);
+        }
+        return true;
+}
+
 
 }

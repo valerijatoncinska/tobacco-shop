@@ -13,17 +13,21 @@ import java.util.Collection;
 @Component
 public class UserProvider {
     private Collection<? extends GrantedAuthority> grant = null;
+    private UserEntity userEntity;
     public UserObject getUserObject() {
         Authentication a = SecurityContextHolder.getContext().getAuthentication();
         if (a!=null && a.getPrincipal() instanceof UserInfo) {
 UserInfo userInfo = (UserInfo) a.getPrincipal();
-UserEntity u = userInfo.getUserEntity();
+userEntity = userInfo.getUserEntity();
 grant = a.getAuthorities();
-return new UserObject(u.getId(),u.getEmail());
+return new UserObject(userEntity.getId(),userEntity.getEmail());
         }
         else {
             return null;
         }
+    }
+    public UserEntity getUserEntity() {
+        return userEntity;
     }
 public boolean role(String role) {
         if (grant!=null) {

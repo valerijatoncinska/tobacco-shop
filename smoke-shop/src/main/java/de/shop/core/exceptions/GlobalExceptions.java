@@ -153,6 +153,12 @@ public class GlobalExceptions {
         ResponseError resp = new ResponseError(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+    @ExceptionHandler(AddressNotfoundException.class)
+    public ResponseEntity<?> addressNotFoundException(AddressNotfoundException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
 
     @ExceptionHandler(ProductNotSavedException.class)
     public ResponseEntity<?> productNotSavedException(ProductNotSavedException e) {
