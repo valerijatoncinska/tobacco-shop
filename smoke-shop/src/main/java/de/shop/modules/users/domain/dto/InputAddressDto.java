@@ -4,7 +4,7 @@ import de.shop.modules.users.domain.entity.UserEntity;
 import jakarta.persistence.*;
 
 public class InputAddressDto {
-    private Long id;
+    private String name;
     private String street;
     private String house;
     private String postalCode;
@@ -12,7 +12,12 @@ public class InputAddressDto {
     private String region;
     private String email;
     private String phone;
-
+public void setName(String name) {
+    this.name = name;
+}
+public String getName() {
+    return name;
+}
     public void setStreet(String street) {
         this.street = street;
     }

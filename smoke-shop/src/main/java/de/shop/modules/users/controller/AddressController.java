@@ -69,6 +69,7 @@ return ResponseEntity.ok(service.info(id));
         validate.notBlank(dto.getPhone(), ((String) p.get("not.blank")).replace("[column]", "Phone"));
         validate.postalCode(dto.getPostalCode(), ((String) p.get("postal.code.error")));
         validate.email(dto.getEmail(), ((String) p.get("error.email")));
+        validate.notBlank(dto.getName(), ((String) p.get("not.blank")).replace("[column]", "name"));
 
 
         return ResponseEntity.ok(service.update(id,dto));
@@ -98,6 +99,7 @@ return ResponseEntity.ok(service.info(id));
         validate.notBlank(dto.getPhone(), ((String) p.get("not.blank")).replace("[column]", "Phone"));
         validate.postalCode(dto.getPostalCode(), ((String) p.get("postal.code.error")));
         validate.email(dto.getEmail(), ((String) p.get("error.email")));
+        validate.notBlank(dto.getName(), ((String) p.get("not.blank")).replace("[column]", "name"));
 
         return ResponseEntity.ok(service.save(dto));
     }

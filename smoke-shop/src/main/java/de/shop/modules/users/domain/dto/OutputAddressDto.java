@@ -2,6 +2,7 @@ package de.shop.modules.users.domain.dto;
 
 public class OutputAddressDto {
     private Long id;
+    private String name;
     private String street;
     private String house;
     private String postalCode;
@@ -10,7 +11,12 @@ public class OutputAddressDto {
     private String country;
     private String email;
     private String phone;
-
+public void setName(String name) {
+    this.name = name;
+}
+public String getName() {
+    return name;
+}
     public void setStreet(String street) {
         this.street = street;
     }

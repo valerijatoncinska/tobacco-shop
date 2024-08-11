@@ -9,6 +9,8 @@ public class AddressEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "name")
+    private String name;
     @Column(name = "street")
     private String street;
     @Column(name = "house")
@@ -28,6 +30,14 @@ public class AddressEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public void setUserEntity(UserEntity user) {
         this.userEntity = user;

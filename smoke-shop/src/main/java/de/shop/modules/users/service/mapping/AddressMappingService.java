@@ -9,6 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface AddressMappingService {
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "name", source = "name")
     AddressEntity mapDtoToEntity(InputAddressDto dto);
+    @Mapping(target = "name", source = "name")
 OutputAddressDto mapEntityToDto(AddressEntity entity);
 }
