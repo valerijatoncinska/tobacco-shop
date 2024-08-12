@@ -216,7 +216,11 @@ public class AuthorService implements Author {
     }
 
     public Optional<UserEntity> findByEmailForProfile(String email) {
-        return userRepository.findByEmail(email);
+        Optional<UserEntity> userEntity = userRepository.findByEmail(email);
+        if (userEntity.isEmpty()) {
+            throw new UserSearchException("User with that email is not found");
+        }
+        return userEntity;
     }
 
 

@@ -5,6 +5,8 @@ import de.shop.core.components.Validate;
 import de.shop.modules.users.domain.dto.*;
 import de.shop.modules.users.domain.entity.UserEntity;
 import de.shop.modules.users.jwt.CustomDetailsService;
+import de.shop.modules.users.jwt.UserObject;
+import de.shop.modules.users.jwt.UserProvider;
 import de.shop.modules.users.service.AuthorService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,13 +33,13 @@ public class AuthorController {
     private LanguageResolver lang; // для работы с мультиязычностью
     private Validate validate; // кастомный валидатор
     private AuthorService service; // сервис аутентификации, регистрации и обновления токенов
-    private CustomDetailsService userDetailsService;
+    private UserProvider userProvider;
 
-    public AuthorController(LanguageResolver lang, Validate validate, AuthorService service, CustomDetailsService userDetailsService) {
+    public AuthorController(LanguageResolver lang, Validate validate, AuthorService service, UserProvider userProvider) {
         this.lang = lang;
         this.validate = validate;
         this.service = service;
-        this.userDetailsService = userDetailsService;
+        this.userProvider = userProvider;
     }
 
     /**
@@ -125,9 +127,9 @@ public class AuthorController {
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDto> getProfile() {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String userEmail = (String) authentication.getPrincipal();
-            Optional<UserEntity> user = service.findByEmailForProfile(userEmail);
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserObject u = userProvider.getUserObject();
+            Optional<UserEntity> user = service.findByEmailForProfile(u.getEmail());
 
             if (user.isEmpty()) {
                 return ResponseEntity.notFound().build();
