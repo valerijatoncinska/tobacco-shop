@@ -122,29 +122,6 @@ public class AuthorController {
         return service.accountActivate(uuid);
     }
 
-
-//    @GetMapping("/profile")
-//    public ResponseEntity<UserProfileDto> getProfile() {
-//        try {
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//            Optional<UserEntity> user = service.findByEmailForProfile(userDetails.getUsername());
-//            if (user.isEmpty()) {
-//                return ResponseEntity.notFound().build();
-//            }
-//
-//            UserProfileDto userProfileDto = new UserProfileDto();
-//            userProfileDto.setId(user.get().getId());
-//            userProfileDto.setEmail(user.get().getEmail());
-//            userProfileDto.setAuthorities((AuthorityDto) userDetails.getAuthorities());
-//
-//            return ResponseEntity.ok(userProfileDto);
-//
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
-
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDto> getProfile() {
         try {
@@ -161,7 +138,7 @@ public class AuthorController {
             userProfileDto.setEmail(user.get().getEmail());
             userProfileDto.setPassword(user.get().getPassword());
             Set<AuthorityDto> authorities = user.get().getRoles().stream()
-                    .map(role -> new AuthorityDto(role.getAuthority()))
+                    .map(role -> new AuthorityDto(role.getTitle()))
                     .collect(Collectors.toSet());
             userProfileDto.setAuthorities(authorities);
 
