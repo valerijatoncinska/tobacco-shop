@@ -1,11 +1,8 @@
 package de.shop.modules.users.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
-@Getter
-@Setter
+
 public class AuthorityDto implements GrantedAuthority {
 
     private String authority;
@@ -17,5 +14,9 @@ public class AuthorityDto implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return authority;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
     }
 }

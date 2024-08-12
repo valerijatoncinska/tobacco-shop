@@ -8,6 +8,7 @@ import de.shop.modules.users.jwt.CustomDetailsService;
 import de.shop.modules.users.service.AuthorService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -122,12 +123,35 @@ public class AuthorController {
     }
 
 
+//    @GetMapping("/profile")
+//    public ResponseEntity<UserProfileDto> getProfile() {
+//        try {
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//            Optional<UserEntity> user = service.findByEmailForProfile(userDetails.getUsername());
+//            if (user.isEmpty()) {
+//                return ResponseEntity.notFound().build();
+//            }
+//
+//            UserProfileDto userProfileDto = new UserProfileDto();
+//            userProfileDto.setId(user.get().getId());
+//            userProfileDto.setEmail(user.get().getEmail());
+//            userProfileDto.setAuthorities((AuthorityDto) userDetails.getAuthorities());
+//
+//            return ResponseEntity.ok(userProfileDto);
+//
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
+
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDto> getProfile() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            Optional<UserEntity> user = service.findByEmailForProfile(userDetails.getUsername());
+            String userEmail = (String) authentication.getPrincipal();
+            Optional<UserEntity> user = service.findByEmailForProfile(userEmail);
+
             if (user.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
@@ -135,7 +159,11 @@ public class AuthorController {
             UserProfileDto userProfileDto = new UserProfileDto();
             userProfileDto.setId(user.get().getId());
             userProfileDto.setEmail(user.get().getEmail());
-            userProfileDto.setAuthorities((Set<AuthorityDto>) userDetails.getAuthorities());
+            userProfileDto.setPassword(user.get().getPassword());
+            Set<AuthorityDto> authorities = user.get().getRoles().stream()
+                    .map(role -> new AuthorityDto(role.getAuthority()))
+                    .collect(Collectors.toSet());
+            userProfileDto.setAuthorities(authorities);
 
             return ResponseEntity.ok(userProfileDto);
 

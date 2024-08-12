@@ -23,25 +23,27 @@ public class CustomDetailsService implements UserDetailsService {
     private LanguageResolver lang;
     private Properties p;
 
-    public CustomDetailsService(LanguageResolver lang,UserRepository repository) {
+    public CustomDetailsService(LanguageResolver lang, UserRepository repository) {
         {
-      this.repository = repository;
-      this.lang = lang;
+            this.repository = repository;
+            this.lang = lang;
         }
     }
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws LoadUserByUsernameException, AccessException  {
+    public UserDetails loadUserByUsername(String username) throws LoadUserByUsernameException, AccessException {
         p = lang.load("users", "author");
         UserEntity user = repository.findByEmail(username)
                 .orElseThrow(() -> new LoadUserByUsernameException(((String) p.get("user.notfound"))));
         if (!user.getEmailActive()) {
             throw new AccessException(((String) p.get("account.no.activate")));
         }
-user.setTimeVisit(LocalDateTime.now());
-try {
-    repository.save(user);
-} catch (DataAccessException e) {
-}
-return new UserInfo(user);    }
+        user.setTimeVisit(LocalDateTime.now());
+        try {
+            repository.save(user);
+        } catch (DataAccessException e) {
+        }
+        return new UserInfo(user);
+    }
 }
 
