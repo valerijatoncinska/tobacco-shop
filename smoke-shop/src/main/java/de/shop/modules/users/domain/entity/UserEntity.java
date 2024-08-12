@@ -140,6 +140,11 @@ public class UserEntity implements UserDetails {
         return emailActive;
     }
 
+    public Set<RoleEntity> getRoles() {
+        return roles;
+    }
+
+
     public String getEmail() {
         return email;
     }

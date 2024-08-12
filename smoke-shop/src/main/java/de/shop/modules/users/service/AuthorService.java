@@ -216,5 +216,9 @@ public class AuthorService implements Author {
         }
     }
 
+    public UserEntity findByEmailForProfile(String email) {
+        return userRepository.findByEmailForProfile(email);
+    }
+
 
 }

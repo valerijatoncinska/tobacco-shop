@@ -2,17 +2,21 @@ package de.shop.modules.users.controller;
 
 import de.shop.core.components.LanguageResolver;
 import de.shop.core.components.Validate;
-import de.shop.modules.users.domain.dto.InputLoginDto;
-import de.shop.modules.users.domain.dto.InputRefreshTokenDto;
-import de.shop.modules.users.domain.dto.InputRegDto;
-import de.shop.modules.users.domain.dto.OutputLoginDto;
+import de.shop.modules.users.domain.dto.*;
+import de.shop.modules.users.domain.entity.UserEntity;
 import de.shop.modules.users.service.AuthorService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.catalina.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -113,5 +117,31 @@ public class AuthorController {
         return service.accountActivate(uuid);
     }
 
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileDto> getProfile() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userEmail = (String) authentication.getPrincipal();
+            UserEntity user = service.findByEmailForProfile(userEmail);
+
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            UserProfileDto userProfileDto = new UserProfileDto();
+            userProfileDto.setId(user.getId());
+            userProfileDto.setEmail(user.getEmail());
+            Set<AuthorityDto> authorities = user.getRoles().stream()
+                    .map(role -> new AuthorityDto(role.getTitle()))
+                    .collect(Collectors.toSet());
+            userProfileDto.setAuthorities(authorities);
+
+            return ResponseEntity.ok(userProfileDto);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 }
