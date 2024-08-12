@@ -160,7 +160,7 @@ return false;
     private List<OutputProductAdminDto> productsForAdmin() {
         return repository.findAll()
                 .stream()
-                .filter(ProductEntity::getActive)
+//                .filter(ProductEntity::getActive)
                 .map(productEntity ->
                         mappingService.mapEntityToAdminDto(productEntity)
                 )
