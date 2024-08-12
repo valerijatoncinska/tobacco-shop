@@ -1,6 +1,5 @@
 package de.shop.modules.users.controller;
 
-import de.shop.core.exceptions.UserSearchException;
 import de.shop.modules.users.domain.dto.CartDto;
 import de.shop.modules.users.domain.dto.InputCartQuantityDto;
 import de.shop.modules.users.domain.dto.OutputCartDto;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/cart")
