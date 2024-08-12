@@ -22,14 +22,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Сервис для аутентификации, регистрации и обновления токенов
@@ -121,7 +120,7 @@ public class AuthorService implements Author {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(userDetails);
             String refreshToken = jwtUtil.generateRefreshToken(userDetails);
-            OutputLoginDto outputLogin = new OutputLoginDto(userDetails.getUsername(), accessToken, refreshToken);
+            OutputLoginDto outputLogin = new OutputLoginDto(userDetails.getUsername(), accessToken, refreshToken, userDetails.getAuthorities());
             return outputLogin;
         } catch (BadCredentialsException e) {
             throw new LoginException(((String) p.get("not.found")));
