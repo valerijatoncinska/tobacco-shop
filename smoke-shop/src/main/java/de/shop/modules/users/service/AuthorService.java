@@ -22,7 +22,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -216,8 +215,8 @@ public class AuthorService implements Author {
         }
     }
 
-    public UserEntity findByEmailForProfile(String email) {
-        return userRepository.findByEmailForProfile(email);
+    public Optional<UserEntity> findByEmailForProfile(String email) {
+        return userRepository.findByEmail(email);
     }
 
 

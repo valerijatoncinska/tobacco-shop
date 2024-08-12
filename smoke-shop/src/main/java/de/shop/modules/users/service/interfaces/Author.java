@@ -16,5 +16,5 @@ public interface Author {
 
     OutputLoginDto login(InputLoginDto inputLoginDto); // метод для аутентификации
 
-    UserEntity findByEmailForProfile(String email);
+    Optional<UserEntity> findByEmailForProfile(String email);
 }

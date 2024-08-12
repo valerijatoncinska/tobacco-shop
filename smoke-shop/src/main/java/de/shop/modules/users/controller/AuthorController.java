@@ -7,13 +7,13 @@ import de.shop.modules.users.domain.entity.UserEntity;
 import de.shop.modules.users.service.AuthorService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -123,16 +123,15 @@ public class AuthorController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userEmail = (String) authentication.getPrincipal();
-            UserEntity user = service.findByEmailForProfile(userEmail);
-
-            if (user == null) {
+            Optional<UserEntity> user = service.findByEmailForProfile(userEmail);
+            if (user.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
 
             UserProfileDto userProfileDto = new UserProfileDto();
-            userProfileDto.setId(user.getId());
-            userProfileDto.setEmail(user.getEmail());
-            Set<AuthorityDto> authorities = user.getRoles().stream()
+            userProfileDto.setId(user.get().getId());
+            userProfileDto.setEmail(user.get().getEmail());
+            Set<AuthorityDto> authorities = user.get().getRoles().stream()
                     .map(role -> new AuthorityDto(role.getTitle()))
                     .collect(Collectors.toSet());
             userProfileDto.setAuthorities(authorities);
