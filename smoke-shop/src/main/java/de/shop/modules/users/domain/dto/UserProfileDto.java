@@ -17,8 +17,6 @@ public class UserProfileDto {
 
     private Set<AuthorityDto> authorities = new HashSet<>();
 
-    private Long cartId;
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -35,9 +33,6 @@ public class UserProfileDto {
         this.authorities = authorities;
     }
 
-    public void setCartId(Long cartId) {
-        this.cartId = cartId;
-    }
 
     public Long getId() {
         return id;
@@ -51,7 +46,4 @@ public class UserProfileDto {
         return roles;
     }
 
-    public Long getCartId() {
-        return cartId;
-    }
 }
