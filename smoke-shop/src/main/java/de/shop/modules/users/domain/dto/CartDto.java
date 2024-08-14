@@ -8,49 +8,63 @@ public class CartDto {
     private BigDecimal price;
     private BigDecimal totalPrice;
     private int quantity;
-private int stock;
-private Long productId;
-public void setTotalPrice(BigDecimal totalPrice) {
-    this.totalPrice = totalPrice;
-}
-public BigDecimal getTotalPrice() {
-    return totalPrice;
-}
+    private int stock;
+    private Long productId;
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getTitle() {
         return title;
     }
-public int getQuantity() {
+
+    public int getQuantity() {
         return quantity;
-}
-public Long getId() {
+    }
+
+    public Long getId() {
         return id;
-}
-public int getStock() {
+    }
+
+    public int getStock() {
         return stock;
-}
-public void setStock(int stock) {
+    }
+
+    public void setStock(int stock) {
         this.stock = stock;
-}
-public void setProductId(Long productId) {
+    }
+
+    public void setProductId(Long productId) {
         this.productId = productId;
-}
-public Long getProductId() {
+    }
+
+    public Long getProductId() {
         return productId;
-}
-public BigDecimal getPrice() {
+    }
+
+    public BigDecimal getPrice() {
         return price;
-}
-public void setPrice(BigDecimal price) {
+    }
+
+    public void setPrice(BigDecimal price) {
         this.price = price;
-}
+    }
 
 }

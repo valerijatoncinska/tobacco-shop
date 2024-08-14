@@ -12,6 +12,7 @@ import de.shop.modules.users.domain.entity.CartItemEntity;
 import de.shop.modules.users.jwt.UserObject;
 import de.shop.modules.users.jwt.UserProvider;
 import de.shop.modules.users.repository.interfaces.CartItemRepository;
+import de.shop.modules.users.service.mapping.CartItemMappingService;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,14 +24,16 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class CartService {
+    private final CartItemMappingService cartItemMappingService;
     private CartItemRepository cartRepository;
     private UserProvider userProvider;
     private ProductRepository productRepository;
 
-    public CartService(CartItemRepository cartRepository, UserProvider userProvider, ProductRepository productRepository) {
+    public CartService(CartItemRepository cartRepository, UserProvider userProvider, ProductRepository productRepository, CartItemMappingService cartItemMappingService) {
         this.cartRepository = cartRepository;
         this.userProvider = userProvider;
         this.productRepository = productRepository;
+        this.cartItemMappingService = cartItemMappingService;
     }
 
     @Transactional
@@ -140,5 +143,12 @@ public class CartService {
         return outputCartDto;
     }
 
+    public Long findByProductId(Long id) {
+        UserObject u = userProvider.getUserObject();
+        CartItemEntity cartItemEntity = cartRepository.findByUserEntityIdAndProductEntityId(u.getId(), id).orElseThrow(() -> new CartItemException("not found cart item"));
+
+        return cartItemEntity.getId();
+
+    }
 
 }

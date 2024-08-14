@@ -7,6 +7,7 @@ import de.shop.modules.product.domain.dto.InputProductDto;
 import de.shop.modules.product.domain.dto.OutputDto;
 import de.shop.modules.product.domain.dto.OutputProductAdminDto;
 import de.shop.modules.product.service.ProductService;
+import de.shop.modules.users.service.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -22,11 +23,13 @@ public class ProductController {
     private ProductService service;
     private LanguageResolver lang;
     private Validate validate;
+    private CartService cartService;
 
-    public ProductController(ProductService service, LanguageResolver lang, Validate validate) {
+    public ProductController(ProductService service, LanguageResolver lang, Validate validate, CartService cartService) {
         this.service = service;
         this.lang = lang;
         this.validate = validate;
+        this.cartService = cartService;
     }
 
     @PutMapping("/{id}")
@@ -66,7 +69,7 @@ public class ProductController {
     public Object addToCart(@PathVariable Long id) {
         boolean n = service.addItemCart(id);
         if (n == true) {
-            return productInfo(id);
+            return cartService.findByProductId(id);
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
