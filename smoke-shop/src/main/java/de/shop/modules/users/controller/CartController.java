@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.web.servlet.function.ServerResponse.status;
+
 
 @RestController
 @RequestMapping("/cart")
@@ -26,7 +28,7 @@ public class CartController {
     }
 
     @DeleteMapping("/clear")
-    public ResponseEntity<?> clear() {
+    public Object clear() {
         if (service.clear() == true) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } else {
@@ -35,9 +37,10 @@ public class CartController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public Object delete(@PathVariable Long id) {
         if (service.drop(id) == true) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return id;
+            // status(HttpStatus.NO_CONTENT).build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
