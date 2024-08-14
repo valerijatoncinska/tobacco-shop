@@ -120,10 +120,10 @@ public class AuthorController {
      * @return возвращает строковое значение
      */
     @GetMapping("/account-activate/{uuid}")
-    public String accountActivate(@PathVariable String uuid) {
-        return service.accountActivate(uuid);
+    public ResponseEntity<?> accountActivate(@PathVariable String uuid) {
+        return ResponseEntity.ok(service.accountActivate(uuid));
     }
-
+    
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDto> getProfile() {
         try {
