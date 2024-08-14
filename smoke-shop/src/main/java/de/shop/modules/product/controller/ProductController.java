@@ -63,10 +63,10 @@ public class ProductController {
     @PostMapping("/{id}/addition-to-cart")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
 
-    public ResponseEntity<?> addToCart(@PathVariable Long id) {
+    public Object addToCart(@PathVariable Long id) {
         boolean n = service.addItemCart(id);
         if (n == true) {
-            return ResponseEntity.ok("ok");
+            return productInfo(id);
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }

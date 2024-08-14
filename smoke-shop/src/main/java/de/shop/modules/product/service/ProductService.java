@@ -43,7 +43,8 @@ public class ProductService {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
     }
-@Transactional
+
+    @Transactional
     public boolean dropProduct(Long id) throws ProductNotFoundException {
         Optional<ProductEntity> p = repository.findById(id);
         if (!p.isPresent()) {
@@ -54,16 +55,17 @@ public class ProductService {
             repository.deleteById(id);
             return true;
         } catch (EmptyResultDataAccessException e) {
-System.out.println("NOT PRODUCT DELETED: "+e.getMessage());
-return false;
+            System.out.println("NOT PRODUCT DELETED: " + e.getMessage());
+            return false;
         } catch (DataIntegrityViolationException e) {
-System.out.println("Нарушается целостность. удаление продукта отклонено "+e.getMessage());
-return false;
+            System.out.println("Нарушается целостность. удаление продукта отклонено " + e.getMessage());
+            return false;
         } catch (IllegalArgumentException e) {
-System.out.println("Проблема с JPA "+e.getMessage());
-return false;
+            System.out.println("Проблема с JPA " + e.getMessage());
+            return false;
         }
     }
+
     public OutputDto productInfo(Long id) throws ProductNotFoundException {
         UserObject u = userProvider.getUserObject();
         Optional<ProductEntity> p = repository.findById(id);
