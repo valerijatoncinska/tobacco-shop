@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create-table-order_item14082024" author="artem@chebotarov.de">
+        <createTable tableName="order_item">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="order_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Добавляем внешний ключ для связи с таблицей orders -->
+        <addForeignKeyConstraint
+            baseTableName="order_item"
+            baseColumnNames="order_id"
+            constraintName="fk_order_item_order"
+            referencedTableName="orders"
+            referencedColumnNames="id"/>
+
+        <!-- Добавляем внешний ключ для связи с таблицей products -->
+        <addForeignKeyConstraint
+            baseTableName="order_item"
+            baseColumnNames="product_id"
+            constraintName="fk_order_item_product"
+            referencedTableName="product"
+            referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>
