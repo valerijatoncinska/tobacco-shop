@@ -1,39 +1,119 @@
 package de.shop.modules.users.service;
 
+import de.shop.core.exceptions.AddressNotfoundException;
 import de.shop.core.exceptions.CartConflictException;
 import de.shop.core.exceptions.CartItemException;
 import de.shop.core.exceptions.DBException;
 import de.shop.modules.product.domain.entity.ProductEntity;
 import de.shop.modules.product.repository.interfaces.ProductRepository;
-import de.shop.modules.users.domain.dto.CartDto;
-import de.shop.modules.users.domain.dto.InputCartQuantityDto;
-import de.shop.modules.users.domain.dto.OutputCartDto;
+import de.shop.modules.users.domain.dto.*;
+import de.shop.modules.users.domain.entity.AddressEntity;
 import de.shop.modules.users.domain.entity.CartItemEntity;
+import de.shop.modules.users.domain.entity.OrderEntity;
+import de.shop.modules.users.domain.entity.OrderItemEntity;
 import de.shop.modules.users.jwt.UserObject;
 import de.shop.modules.users.jwt.UserProvider;
+import de.shop.modules.users.repository.interfaces.AddressRepository;
 import de.shop.modules.users.repository.interfaces.CartItemRepository;
+import de.shop.modules.users.repository.interfaces.OrderItemRepository;
+import de.shop.modules.users.repository.interfaces.OrderRepository;
 import de.shop.modules.users.service.mapping.CartItemMappingService;
+import de.shop.modules.users.service.mapping.OrderMappingService;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class CartService {
-    private final CartItemMappingService cartItemMappingService;
     private CartItemRepository cartRepository;
     private UserProvider userProvider;
     private ProductRepository productRepository;
+    private OrderRepository orderRepository;
+    private OrderMappingService orderMappingService;
+    private AddressRepository addressRepository;
+    private OrderItemRepository orderItemRepository;
 
-    public CartService(CartItemRepository cartRepository, UserProvider userProvider, ProductRepository productRepository, CartItemMappingService cartItemMappingService) {
+    public CartService(CartItemRepository cartRepository, UserProvider userProvider, ProductRepository productRepository, OrderRepository orderRepository, OrderMappingService orderMappingService, AddressRepository addressRepository, OrderItemRepository orderItemRepository) {
         this.cartRepository = cartRepository;
         this.userProvider = userProvider;
         this.productRepository = productRepository;
-        this.cartItemMappingService = cartItemMappingService;
+        this.orderRepository = orderRepository;
+        this.orderMappingService = orderMappingService;
+        this.addressRepository = addressRepository;
+        this.orderItemRepository = orderItemRepository;
+    }
+
+    private HashMap<String, String> address(Long user, Long id) throws AddressNotfoundException {
+        Optional<AddressEntity> da = addressRepository.findByUserEntityIdAndId(user, id);
+        if (!da.isPresent()) {
+            throw new AddressNotfoundException("not address");
+        }
+        AddressEntity address = da.get();
+        String location = address.getName() + ". " + address.getStreet() + " " + address.getHouse() + ". " + address.getPostalCode() + " " + address.getLocality() + ". " + address.getRegion() + " " + address.getCountry();
+        String email = address.getEmail();
+        String phone = address.getPhone();
+        HashMap<String, String> l = new HashMap<>();
+        l.put("address", location);
+        l.put("email", email);
+        l.put("phone", phone);
+        return l;
+    }
+
+    public OutputOrderDataDto order(InputOrderDto dto) throws DBException, AddressNotfoundException {
+        if (!dto.getPayments().equals("paypal")) {
+            throw new AddressNotfoundException("not payments");
+        }
+        UserObject u = userProvider.getUserObject();
+        HashMap<String, String> deliveryAddress = address(u.getId(), dto.getDeliveryAddress());
+        HashMap<String, String> billingAddress = address(u.getId(), dto.getBillingAddress());
+        // Заполняем OrderEntity
+        OrderEntity entity = new OrderEntity();
+        entity.setOrderStatus("pending");
+        entity.setUserEntity(userProvider.getUserEntity());
+        entity.setDate(LocalDateTime.now());
+        entity.setDeliveryAddress(deliveryAddress.get("address"));
+        entity.setBillingAddress(billingAddress.get("address"));
+// Надо пройтись по CartItemEntity - элементы корзины.
+        List<CartItemEntity> carts = cartRepository.findByUserEntityId(u.getId());
+        List<OrderItemEntity> orderItemEntity = new ArrayList<>();
+        BigDecimal money = BigDecimal.ZERO;
+        for (CartItemEntity cart : carts) {
+            BigDecimal quantity = BigDecimal.valueOf(cart.getQuantity());
+            BigDecimal price = cart.getProduct().getPrice();
+            BigDecimal total = price.multiply(quantity);
+            money = money.add(total);
+            OrderItemEntity oie = new OrderItemEntity();
+            oie.setTitle(cart.getProduct().getTitle());
+            oie.setPrice(cart.getProduct().getPrice());
+            oie.setQuantity(cart.getQuantity());
+            oie.setTotal(total);
+            oie.setProduct(cart.getProduct());
+            oie.setOrderEntity(entity);
+            orderItemEntity.add(oie);
+            cartRepository.delete(cart);
+        }
+
+        entity.setTotal(money);
+        entity.setPayments(dto.getPayments());
+        entity.setEmail(billingAddress.get("email"));
+        entity.setPhone(billingAddress.get("phone"));
+
+        try {
+            orderRepository.save(entity);
+            orderItemRepository.saveAll(orderItemEntity);
+        } catch (DataAccessException e) {
+            throw new DBException("Error saving order: ");
+        }
+        OutputOrderDataDto out = orderMappingService.mapEntityToDto(entity);
+        return out;
     }
 
     @Transactional

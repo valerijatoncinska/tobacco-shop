@@ -2,6 +2,7 @@ package de.shop.modules.users.controller;
 
 import de.shop.modules.users.domain.dto.CartDto;
 import de.shop.modules.users.domain.dto.InputCartQuantityDto;
+import de.shop.modules.users.domain.dto.InputOrderDto;
 import de.shop.modules.users.domain.dto.OutputCartDto;
 import de.shop.modules.users.service.CartService;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,11 @@ public class CartController {
 
     public CartController(CartService service) {
         this.service = service;
+    }
+
+    @PostMapping("/order")
+    public ResponseEntity<?> order(@RequestBody InputOrderDto dto) {
+        return ResponseEntity.ok(service.order(dto));
     }
 
     @PutMapping("/{id}")

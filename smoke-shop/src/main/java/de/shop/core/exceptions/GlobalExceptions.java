@@ -39,6 +39,19 @@ public class GlobalExceptions {
         }
     }
 
+    @ExceptionHandler(AddressNotfoundException.class)
+    public ResponseEntity<?> addressNotFoundException(AddressNotfoundException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        if (e.getMessage() != null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+
+        } else {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+
     @ExceptionHandler(CartItemException.class)
     public ResponseEntity<?> cartItemException(CartItemException e) {
         ResponseError resp = new ResponseError(e.getMessage());
@@ -50,6 +63,7 @@ public class GlobalExceptions {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
     @ExceptionHandler(CartConflictException.class)
     public ResponseEntity<?> cartConflictException(CartConflictException e) {
         ResponseError resp = new ResponseError(e.getMessage());
@@ -153,11 +167,7 @@ public class GlobalExceptions {
         ResponseError resp = new ResponseError(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-    @ExceptionHandler(AddressNotfoundException.class)
-    public ResponseEntity<?> addressNotFoundException(AddressNotfoundException e) {
-        ResponseError resp = new ResponseError(e.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
+
 
 
     @ExceptionHandler(ProductNotSavedException.class)

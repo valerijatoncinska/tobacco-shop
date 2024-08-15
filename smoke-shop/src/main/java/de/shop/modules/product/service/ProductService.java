@@ -74,13 +74,13 @@ public class ProductService {
         }
         ProductEntity product = p.get();
         OutputDto outputDto = new OutputDto();
-        if (userProvider.role("ROLE_ADMIN")) {
+//        if (userProvider.role("ROLE_ADMIN")) {
             OutputProductAdminDto outputProductAdminDto = mappingService.mapEntityToAdminDto(product);
             outputDto.setData(outputProductAdminDto);
-        } else {
-            OutputProductUserDto outputProductUserDto = mappingService.mapEntityToUserDto(product);
-            outputDto.setData(outputProductUserDto);
-        }
+//        } else {
+//            OutputProductUserDto outputProductUserDto = mappingService.mapEntityToUserDto(product);
+//            outputDto.setData(outputProductUserDto);
+//        }
         return outputDto;
     }
 
@@ -153,8 +153,7 @@ public class ProductService {
         return repository.findAll()
                 .stream()
                 .filter(ProductEntity::getActive)
-                .map(productEntity ->
-                        mappingService.mapEntityToUserDto(productEntity)
+                .map(mappingService::mapEntityToUserDto
                 )
                 .toList();
     }
@@ -163,8 +162,7 @@ public class ProductService {
         return repository.findAll()
                 .stream()
 //                .filter(ProductEntity::getActive)
-                .map(productEntity ->
-                        mappingService.mapEntityToAdminDto(productEntity)
+                .map(mappingService::mapEntityToAdminDto
                 )
                 .toList();
     }
@@ -173,11 +171,11 @@ public class ProductService {
     public OutputDto productsAll() {
         OutputDto o = new OutputDto();
         UserObject u = userProvider.getUserObject();
-        if (userProvider.role("ROLE_ADMIN")) {
+//        if (userProvider.role("ROLE_ADMIN")) {
             o.setData(productsForAdmin());
-        } else {
-            o.setData(productsForUser());
-        }
+//        } else {
+//            o.setData(productsForUser());
+//        }
         return o;
     }
 

@@ -20,7 +20,7 @@ public class LanguageResolver {
     @Value("${language.dir}")
     private String languageDir; // каталог для хранения переводов
     private ParseProperties parseProperties; // кастомная обертка для базового класса Properties
-private LanguageConfig languageConfig;
+    private LanguageConfig languageConfig;
     public LanguageResolver(ParseProperties parseProperties,LanguageConfig languageConfig) {
         {
             this.parseProperties = parseProperties;

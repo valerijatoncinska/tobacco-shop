@@ -65,31 +65,31 @@ public class OrderService {
         OrderEntity order = o.get();
         List<OrderItemEntity> orderItemEntity = orderItemRepository.findByOrderEntityIdOrderByIdDesc(order.getId());
         List<OutputOrderItemDto> l = new ArrayList<>();
-for (OrderItemEntity item : orderItemEntity) {
-OutputOrderItemDto out = new OutputOrderItemDto();
-out.setId(item.getId());
-out.setTitle(item.getTitle());
-out.setPrice(item.getPrice());
-out.setTotal(item.getTotal());
-out.setQuantity(item.getQuantity());
-out.setProductId(item.getProduct().getId());
-l.add(out);
+        for (OrderItemEntity item : orderItemEntity) {
+            OutputOrderItemDto out = new OutputOrderItemDto();
+            out.setId(item.getId());
+            out.setTitle(item.getTitle());
+            out.setPrice(item.getPrice());
+            out.setTotal(item.getTotal());
+            out.setQuantity(item.getQuantity());
+            out.setProductId(item.getProduct().getId());
+            l.add(out);
         }
-OutputOrderDataDto data = new OutputOrderDataDto();
-data.setId(order.getId());
-data.setTotal(order.getTotal());
-data.setOrderStatus(order.getOrderStatus());
-data.setDeliveryAddress(order.getDeliveryAddress());
-data.setBillingAddress(order.getBillingAddress());
-data.setEmail(order.getEmail());
-data.setPhone(order.getPhone());
-data.setDate(order.getDate());
-data.setPayments(order.getPayments());
+        OutputOrderDataDto data = new OutputOrderDataDto();
+        data.setId(order.getId());
+        data.setTotal(order.getTotal());
+        data.setOrderStatus(order.getOrderStatus());
+        data.setDeliveryAddress(order.getDeliveryAddress());
+        data.setBillingAddress(order.getBillingAddress());
+        data.setEmail(order.getEmail());
+        data.setPhone(order.getPhone());
+        data.setDate(order.getDate());
+        data.setPayments(order.getPayments());
 
-OutputOrderDto output = new OutputOrderDto();
-output.setData(data);
-output.setProducts(l);
+        OutputOrderDto output = new OutputOrderDto();
+        output.setData(data);
+        output.setProducts(l);
 
-return output;
+        return output;
     }
 }

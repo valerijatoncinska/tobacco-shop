@@ -19,38 +19,39 @@ public class Validate {
 
     /**
      * Метод, который проверяет, а корректно ли введена цена
+     *
      * @param price   цена.
      * @param min     минимальный порог
-     * @param max максимальный порог
+     * @param max     максимальный порог
      * @param message сообщение ошибки
      * @return возвращает boolean
      * @throws ValidateException отлов ошибок
      */
-    public boolean price(BigDecimal price,BigDecimal min, BigDecimal max,String message) throws ValidateException {
-        boolean a = (price.compareTo(min)>0 && price.compareTo(max)<0);
-        if (a==false) {
-throw new ValidateException(message);
+    public boolean price(BigDecimal price, BigDecimal min, BigDecimal max, String message) throws ValidateException {
+        boolean a = (price.compareTo(min) > 0 && price.compareTo(max) < 0);
+        if (a == false) {
+            throw new ValidateException(message);
         }
         return true;
-}
+    }
 
     /**
      * Метод, который проверяет корректность на минимальное и максимальное значение
+     *
      * @param p       Число
      * @param min     минимальное значение
-     * @param max      максимальное значение
-     * @param message   сообщение о ошибке
+     * @param max     максимальное значение
+     * @param message сообщение о ошибке
      * @return возвращает boolean
      * @throws ValidateException отлов ошибок
      */
-    public boolean minMax(int p,int min,int max,String message) throws ValidateException {
-        if (p>min && p<max) {
+    public boolean minMax(int p, int min, int max, String message) throws ValidateException {
+        if (p > min && p < max) {
             return true;
+        } else {
+            throw new ValidateException(message);
         }
-        else {
-throw new ValidateException(message);
-        }
-}
+    }
 
     /**
      * Метод проверяет строку на пустоту
@@ -72,10 +73,10 @@ throw new ValidateException(message);
     }
 
     public boolean checked(boolean b, String message) throws ValidateException {
-    if (!b) {
-        throw new ValidateException(message);
-    }
-    return true;
+        if (!b) {
+            throw new ValidateException(message);
+        }
+        return true;
     }
 
 
@@ -116,7 +117,7 @@ throw new ValidateException(message);
             if (str == null || str.trim().isEmpty()) {
                 throw new ValidateException(message);
             }
-            String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$";
+            String emailRegex = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
             Pattern pattern = Pattern.compile(emailRegex);
             Matcher matcher = pattern.matcher(str);
             if (!matcher.matches()) {
@@ -128,13 +129,14 @@ throw new ValidateException(message);
             throw e;
         }
     }
-public boolean postalCode(String code,String message) throws ValidateException {
+
+    public boolean postalCode(String code, String message) throws ValidateException {
         int c = Integer.parseInt(code);
-        if (c<1067 || c>99998) {
-throw new ValidateException(message);
+        if (c < 1067 || c > 99998) {
+            throw new ValidateException(message);
         }
         return true;
-}
+    }
 
 
 }
