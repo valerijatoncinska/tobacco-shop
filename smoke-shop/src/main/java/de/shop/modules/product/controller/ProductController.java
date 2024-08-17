@@ -39,8 +39,8 @@ public class ProductController {
         validate.notBlank(dto.getTitle(), ((String) p.get("not.blank")));
         validate.price(dto.getPrice(), BigDecimal.ZERO, new BigDecimal(5000), ((String) p.get("price.error")).replace("[min]", "0").replace("[max]", "5000"));
         validate.minMax(dto.getQuantity(), 0, 5000, ((String) p.get("stock.error")).replace("[min]", "0").replace("[max]", "5000"));
-        validate.notBlank(dto.getDescription(), ((String) p.get("not.blank")));
-        validate.notBlank(dto.getCharacteristics(), ((String) p.get("not.blank")));
+        validate.notBlank(dto.getDescription(), ((String) p.get("desc.not.blank")));
+        validate.notBlank(dto.getCharacteristics(), ((String) p.get("char.not.blank")));
         return ResponseEntity.ok(service.updateProduct(id, dto));
     }
 
