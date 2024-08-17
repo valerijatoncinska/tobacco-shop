@@ -8,8 +8,11 @@ public class OutputProductAdminDto {
     private Long id;
     private String title;
     private BigDecimal price;
-private int quantity;
-private boolean active;
+    private int quantity;
+    private boolean active;
+    private String description;
+    private String characteristics;
+
     public Long getId() {
         return id;
     }
@@ -30,6 +33,26 @@ private boolean active;
         return price;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCharacteristics() {
+        return characteristics;
+    }
+
+    public void setCharacteristics(String characteristics) {
+        this.characteristics = characteristics;
+    }
+
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
@@ -39,12 +62,28 @@ private boolean active;
     public boolean getActive() { return active;}
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OutputProductAdminDto that = (OutputProductAdminDto) o;
+        return quantity == that.quantity && active == that.active && Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(price, that.price) && Objects.equals(description, that.description) && Objects.equals(characteristics, that.characteristics);
+    }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(id, title, price);
+        return Objects.hash(id, title, price, quantity, active, description, characteristics);
     }
 
     @Override
     public String toString() {
-        return "Product:" + title + " price:" + price;
+        return "OutputProductAdminDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", active=" + active +
+                ", description='" + description + '\'' +
+                ", characteristics='" + characteristics + '\'' +
+                '}';
     }
 }

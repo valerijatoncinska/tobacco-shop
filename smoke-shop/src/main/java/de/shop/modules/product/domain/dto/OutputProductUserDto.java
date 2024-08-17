@@ -8,6 +8,8 @@ public class OutputProductUserDto {
     private Long id;
     private String title;
     private BigDecimal price;
+    private String description;
+    private String characteristics;
     public Long getId() {
         return id;
     }
@@ -31,13 +33,44 @@ public class OutputProductUserDto {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCharacteristics() {
+        return characteristics;
+    }
+
+    public void setCharacteristics(String characteristics) {
+        this.characteristics = characteristics;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OutputProductUserDto that = (OutputProductUserDto) o;
+        return Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(price, that.price) && Objects.equals(description, that.description) && Objects.equals(characteristics, that.characteristics);
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, price);
+        return Objects.hash(id, title, price, description, characteristics);
     }
 
     @Override
     public String toString() {
-        return "Product:" + title + " price:" + price;
+        return "OutputProductUserDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                ", description='" + description + '\'' +
+                ", characteristics='" + characteristics + '\'' +
+                '}';
     }
 }

@@ -29,26 +29,48 @@ public class ProductEntity {
 
     @Column(name = "quantity")
     private int quantity;
-@OneToMany(mappedBy = "productEntity")
-private Set<CartItemEntity> cartEntity;
+    @OneToMany(mappedBy = "productEntity")
+    private Set<CartItemEntity> cartEntity;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "characteristics")
+    private String characteristics;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProductEntity that = (ProductEntity) o;
-        return active == that.active && quantity == that.quantity && Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(price, that.price);
+        ProductEntity entity = (ProductEntity) o;
+        return active == entity.active && quantity == entity.quantity && Objects.equals(id, entity.id) && Objects.equals(title, entity.title) && Objects.equals(price, entity.price) && Objects.equals(cartEntity, entity.cartEntity) && Objects.equals(description, entity.description) && Objects.equals(characteristics, entity.characteristics);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, price, active, quantity);
+        return Objects.hash(id, title, price, active, quantity, cartEntity, description, characteristics);
     }
 
     @Override
     public String toString() {
         return String.format("Product: id - %d, title - %s, price - %s, active - %s, quantity - %d",
                 id, title, price, active ? "yes" : "no", quantity);
+    }
+
+    public String getCharacteristics() {
+        return characteristics;
+    }
+
+    public void setCharacteristics(String characteristics) {
+        this.characteristics = characteristics;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getQuantity() {

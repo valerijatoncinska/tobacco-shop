@@ -145,6 +145,8 @@ public class ProductService {
         oldEntity.setPrice(entity.getPrice());
         oldEntity.setActive(entity.getActive());
         oldEntity.setQuantity(entity.getQuantity());
+        oldEntity.setDescription(entity.getDescription());
+        oldEntity.setCharacteristics(entity.getCharacteristics());
 
         return oldEntity;
     }

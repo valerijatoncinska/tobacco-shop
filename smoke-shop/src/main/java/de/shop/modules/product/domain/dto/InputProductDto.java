@@ -1,22 +1,47 @@
 package de.shop.modules.product.domain.dto;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class InputProductDto {
     private String title;
     private BigDecimal price;
     private int quantity;
     private boolean active;
+    private String description;
+    private String characteristics;
 
-    public InputProductDto(String title, BigDecimal price, int quantity, boolean active) {
+    public InputProductDto(String title, BigDecimal price, int quantity, boolean active, String description, String characteristics) {
         this.title = title;
         this.price = price;
         this.quantity = quantity;
         this.active = active;
+        this.description = description;
+        this.characteristics = characteristics;
     }
 
     public InputProductDto() {
 
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCharacteristics() {
+        return characteristics;
+    }
+
+    public void setCharacteristics(String characteristics) {
+        this.characteristics = characteristics;
     }
 
     public void setTitle(String title) {
@@ -49,5 +74,30 @@ public class InputProductDto {
 
     public boolean getActive() {
         return active;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InputProductDto that = (InputProductDto) o;
+        return quantity == that.quantity && active == that.active && Objects.equals(title, that.title) && Objects.equals(price, that.price) && Objects.equals(description, that.description) && Objects.equals(characteristics, that.characteristics);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, price, quantity, active, description, characteristics);
+    }
+
+    @Override
+    public String toString() {
+        return "InputProductDto{" +
+                "title='" + title + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", active=" + active +
+                ", description='" + description + '\'' +
+                ", characteristics='" + characteristics + '\'' +
+                '}';
     }
 }
