@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<div th:fragment="logo (${domain}, ${name_app})">
+<p><a th:href="${domain}" th:text="${name_app}"></a></p>
+</div>
+
+
+
+
+<div th:fragment="footer (domain, email, adresse, contact_email, contact_tel,work_time,name_app)">
+<div class='footer'>
+<h5>Unser Geschäft</h5>
+<p>Adresse</p>: <span th:text="${adresse}"></span></p>
+<p>Email <a th:href="'mailto:' + ${contact_email}" th:text="${contact_email}"></a></p>
+<p>Tel: <a th:href="'tel:' + ${contact_tel}" th:text="${contact_tel}"></a></p>
+<p>Öffnungszeiten: <span th:text="${work_time}"></span></p>
+<p><a th:href="${domain} + '/page/agreement'">Vereinbarung</a> / 
+<a th:href="${domain} + '/product/all'">Produkte</a></p>
+<p>&copy; <span th:text="${name_app}"></span></p>
+<p><a th:href="${domain} + '/unsubcribe/' + ${email}">Von den Newslettern abmelden</a></p>
+</div>
+</div>
+</body>
+</html>

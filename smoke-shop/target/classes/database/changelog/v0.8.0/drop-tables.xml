@@ -1,0 +1,16 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="drop-table05082024" author="artem@chebotarov.de">
+        <dropTable tableName="cart_product" cascadeConstraints="true"/>
+        <dropTable tableName="order_history" cascadeConstraints="true"/>
+        <dropTable tableName="orders" cascadeConstraints="true"/>
+        <dropTable tableName="user_order" cascadeConstraints="true"/>
+        <dropTable tableName="cart" cascadeConstraints="true"/>
+        <dropTable tableName="customer" cascadeConstraints="true"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<title th:text="${title}"> </title>
+</head>
+<body>
+<div lang="ru">
+<h1>Подтверждение аккаунта</h1>
+<div th:replace="/ru/fragments :: logo (domain, name_app)"></div>
+<br>
+<p>Здравствуйте! Вы прошли регистрацию в нашем магазине.<br>
+Чтобы продолжить использование ресурса, вам нужно подтвердить аккаунт.<br>
+Пожалуйста, нажмите на ссылку ниже.</p><br>
+
+<p><a th:href="${link_active}">Подтвердить аккаунт</a></p><br>
+
+<p>Внимание! Если регистрацию совершил другой участник, тогда не подтверждайте аккаунт.<br>
+Через сутки, ваш электронный адрес, будет удален из нашей базы, а аккаунт унечтожен.</p>
+<br>
+<div th:replace="/ru/fragments :: footer (${domain},${email},${adresse},${contact_email},${contact_tel},${work_time},${name_app})"></div>
+</div>
+</body>
+</html>

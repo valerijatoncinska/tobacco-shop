@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="add-columns-to-users03082024" author="artem@chebotarov.de">
+        <addColumn tableName="users">
+            
+            <!-- Колонка для хранения UUID кода -->
+            <column name="active_code" type="varchar(36)">
+                <constraints nullable="true"/>
+            </column>
+            
+            <!-- Колонка для хранения времени регистрации -->
+            <column name="time_reg" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Колонка для хранения времени визита -->
+            <column name="time_visit" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            
+            
+            <!-- Колонка для хранения времени окончания действия ссылки -->
+            <column name="active_code_expiry" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+<column name="is_adult" type="boolean">
+<constraints nullable="false"/>
+</column>
+<column name="subscribe_news" type="boolean">
+<constraints nullable="false"/>
+</column>
+<column name="email_active" type="boolean">
+<constraints nullable="false"/>
+</column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

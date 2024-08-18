@@ -58,6 +58,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> dropProduct(@PathVariable Long id) {
         if (service.dropProduct(id)) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -68,8 +69,7 @@ public class ProductController {
 
     // Добавляем в корзину продукт.
     @PostMapping("/{id}/addition-to-cart")
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-
+    @Secured("ROLE_USER")
     public Object addToCart(@PathVariable Long id) {
         boolean n = service.addItemCart(id);
         if (n == true) {
