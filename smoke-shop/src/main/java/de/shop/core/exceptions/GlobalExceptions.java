@@ -26,6 +26,12 @@ public class GlobalExceptions {
         System.out.println("503 - Service Unavailable \n " + resp.getMessage());
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
     }
+    @ExceptionHandler(OrderStatusNotFoundException.class)
+    public ResponseEntity<?> orderStatusNotFoundException(OrderStatusNotFoundException e) {
+        ResponseError resp = new ResponseError(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
+    }
+
 
     @ExceptionHandler(UserSearchException.class)
     public ResponseEntity<?> userSearchException(UserSearchException e) {
