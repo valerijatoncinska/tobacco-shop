@@ -32,7 +32,7 @@ public class UserEntity implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
     @Column(name = "is_adult", nullable = false)
-    private boolean isadult;
+    private boolean isAdult;
     @Column(name = "subscribe_news", nullable = false)
     private boolean subscribeNews;
     @Column(name = "active_code")
@@ -57,22 +57,6 @@ public class UserEntity implements UserDetails {
     private Set<CartItemEntity> cartItemEntity;
 
 
-    public UserEntity() {
-
-    }
-
-    public UserEntity(String email, String password, Set<RoleEntity> roles, boolean isadult, boolean subscribe_news, String activeCode, LocalDateTime timeReg, LocalDateTime timeVisit, LocalDateTime activeCodeExpiry) {
-        this.email = email;
-        this.password = password;
-        this.roles = roles;
-        this.isadult = isadult;
-        this.subscribeNews = subscribe_news;
-        this.activeCode = activeCode;
-        this.timeReg = timeReg;
-        this.timeVisit = timeVisit;
-        this.activeCodeExpiry = activeCodeExpiry;
-        this.emailActive = false;
-    }
 
     public void setId(Long id) {
         this.id = id;
@@ -91,8 +75,8 @@ public class UserEntity implements UserDetails {
     }
 
 
-    public void setIsadult(boolean isadult) {
-        this.isadult = isadult;
+    public void setIsAdult(boolean isadult) {
+        this.isAdult = isadult;
     }
 
     public void setSubscribeNews(boolean s) {
@@ -165,8 +149,8 @@ public class UserEntity implements UserDetails {
         return activeCodeExpiry;
     }
 
-    public boolean getIsadult() {
-        return isadult;
+    public boolean getIsAdult() {
+        return isAdult;
     }
 
     public boolean getSubscribeNews() {

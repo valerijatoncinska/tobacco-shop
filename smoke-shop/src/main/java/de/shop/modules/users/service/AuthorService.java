@@ -163,7 +163,7 @@ public class AuthorService implements Author {
         newUser.setTimeVisit(LocalDateTime.now()); // последний визит
         newUser.setActiveCode(uuid); // передали uuid в entity
         newUser.setActiveCodeExpiry(LocalDateTime.now().plusDays(1)); // срок жизни активации
-
+        newUser.setIsAdult(ird.getIsAdult());
         try { // отправляем на регистрацию
             userRepository.save(newUser); // вносим в базу пользователя.
         } catch (DataAccessException e) {
