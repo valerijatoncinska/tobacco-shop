@@ -10,20 +10,14 @@ public class InputProductDto {
     private boolean active;
     private String description;
     private String characteristics;
+    private String imgUrl;
 
-    public InputProductDto(String title, BigDecimal price, int quantity, boolean active, String description, String characteristics) {
-        this.title = title;
-        this.price = price;
-        this.quantity = quantity;
-        this.active = active;
-        this.description = description;
-        this.characteristics = characteristics;
-    }
-
-    public InputProductDto() {
-
-    }
-
+public void setImgUrl(String imgUrl) {
+    this.imgUrl = imgUrl;
+}
+public String getImgUrl() {
+    return imgUrl;
+}
     public boolean isActive() {
         return active;
     }

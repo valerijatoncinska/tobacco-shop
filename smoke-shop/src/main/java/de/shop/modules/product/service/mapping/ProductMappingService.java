@@ -11,11 +11,12 @@ import org.mapstruct.Mapping;
 public interface ProductMappingService {
 
     @Mapping(target = "id", ignore = true)
-
     ProductEntity mapDtoToEntity(InputProductDto dto);
 
+    @Mapping(target = "imgUrl", source = "imgUrl")
     OutputProductAdminDto mapEntityToAdminDto(ProductEntity entity);
 
+    @Mapping(target = "imgUrl", source = "imgUrl")
     OutputProductUserDto mapEntityToUserDto(ProductEntity entity);
 
 

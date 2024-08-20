@@ -15,7 +15,7 @@ import static org.springframework.web.servlet.function.ServerResponse.status;
 
 @RestController
 @RequestMapping("/cart")
-@Secured({"ROLE_USER","ROLE_ADMIN"})
+@Secured("ROLE_USER")
 public class CartController {
     private CartService service;
 

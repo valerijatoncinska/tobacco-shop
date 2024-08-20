@@ -37,7 +37,15 @@ public class ProductEntity {
 
     @Column(name = "characteristics")
     private String characteristics;
+@Column(name = "img_url")
+private String imgUrl;
 
+public void setImgUrl(String imgUrl) {
+    this.imgUrl = imgUrl;
+}
+public String getImgUrl() {
+    return imgUrl;
+}
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

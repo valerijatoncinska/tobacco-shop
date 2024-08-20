@@ -170,6 +170,7 @@ public class CartService {
             cartDto.setProductId(product.getId());
             cartDto.setTotalPrice(price);
             cartDto.setPrice(product.getPrice());
+            cartDto.setImgUrl(product.getImgUrl());
             return cartDto;
         } catch (DataAccessException e) {
             throw new DBException("error");
@@ -215,6 +216,7 @@ public class CartService {
                     BigDecimal total = p.getPrice().multiply(q);
                     money.updateAndGet(m -> m.add(total));
                     cart.setTotalPrice(total);
+                    cart.setImgUrl(p.getImgUrl());
                     return cart;
                 })
                 .toList();

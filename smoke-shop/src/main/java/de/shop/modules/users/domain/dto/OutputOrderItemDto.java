@@ -13,6 +13,13 @@ public class OutputOrderItemDto {
     private BigDecimal total;
     private int quantity;
     private Long productId;
+    private String imgUrl;
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+    public String getImgUrl() {
+        return imgUrl;
+    }
     public void setId(Long id) {
         this.id = id;
     }

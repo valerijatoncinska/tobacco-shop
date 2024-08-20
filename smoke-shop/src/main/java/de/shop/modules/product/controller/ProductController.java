@@ -71,6 +71,7 @@ public class ProductController {
     @PostMapping("/{id}/addition-to-cart")
     @Secured("ROLE_USER")
     public Object addToCart(@PathVariable Long id) {
+        System.out.println("Работает контроллер добавления в корзину");
         boolean n = service.addItemCart(id);
         if (n == true) {
             return cartService.findByProductId(id);
@@ -89,5 +90,5 @@ public class ProductController {
         return ResponseEntity.ok(service.productsAll());
     }
 
-    
+
 }

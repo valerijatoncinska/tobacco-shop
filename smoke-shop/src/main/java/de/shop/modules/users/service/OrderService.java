@@ -73,6 +73,8 @@ public class OrderService {
             out.setTotal(item.getTotal());
             out.setQuantity(item.getQuantity());
             out.setProductId(item.getProduct().getId());
+            out.setImgUrl(item.getProduct().getImgUrl());
+
             l.add(out);
         }
         OutputOrderDataDto data = new OutputOrderDataDto();

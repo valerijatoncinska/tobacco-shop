@@ -12,7 +12,14 @@ public class OutputProductAdminDto {
     private boolean active;
     private String description;
     private String characteristics;
+private String imgUrl;
 
+public void setImgUrl(String imgUrl) {
+    this.imgUrl = imgUrl;
+}
+public String getImgUrl() {
+    return imgUrl;
+}
     public Long getId() {
         return id;
     }

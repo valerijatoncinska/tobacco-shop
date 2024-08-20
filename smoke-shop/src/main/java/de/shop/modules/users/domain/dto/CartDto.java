@@ -10,6 +10,15 @@ public class CartDto {
     private int quantity;
     private int stock;
     private Long productId;
+    private String imgUrl;
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
 
     public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
