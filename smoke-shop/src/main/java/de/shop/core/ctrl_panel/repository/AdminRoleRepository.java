@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface AdminRoleRepository extends JpaRepository<RoleEntity, Long> {
     Optional<RoleEntity> findById(Long id);
-
+Optional<RoleEntity> findByTitle(String title);
 }

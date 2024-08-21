@@ -1,16 +1,16 @@
 package de.shop.core.ctrl_panel.service;
 
-import de.shop.core.ctrl_panel.domain.dto.OutputRoleDto;
-import de.shop.core.ctrl_panel.domain.dto.OutputUserDataDto;
-import de.shop.core.ctrl_panel.domain.dto.OutputUserDto;
-import de.shop.core.ctrl_panel.domain.dto.OutputUserPreviewDto;
+import de.shop.core.ctrl_panel.domain.dto.*;
 import de.shop.core.ctrl_panel.domain.entity.AdminRoleItemEntity;
 import de.shop.core.ctrl_panel.repository.AdminRoleItemRepository;
 import de.shop.core.ctrl_panel.repository.AdminRoleRepository;
 import de.shop.core.ctrl_panel.repository.AdminUsersRepository;
+import de.shop.core.exceptions.DBException;
+import de.shop.core.exceptions.RegConflictException;
 import de.shop.core.exceptions.UserSearchException;
 import de.shop.modules.users.domain.entity.RoleEntity;
 import de.shop.modules.users.domain.entity.UserEntity;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,8 +31,46 @@ public class AdminUsersService {
         this.roleItemRepository = roleItemRepository;
     }
 
+    public OutputUserDto dropRole(Long id, Long roleid) throws DBException, UserSearchException {
+        Optional<AdminRoleItemEntity> opt = roleItemRepository.findByUserIdAndId(id, roleid);
+        if (!opt.isPresent()) {
+            throw new UserSearchException("not role");
+        }
+        AdminRoleItemEntity item = opt.get();
+try {
+    roleItemRepository.delete(item);
+} catch(DataAccessException e) {
+    System.out.println("500 - internal server error \n "+e.getMessage());
+    throw new DBException("Internal server error");
+}
+return info(id);
+    }
+public OutputUserDto addRole(Long id, InputRoleIdDto dto) throws UserSearchException, RegConflictException {
+Optional<AdminRoleItemEntity> opt = roleItemRepository.findByUserIdAndRoleId(id,dto.getRole());
+
+
+if (opt.isPresent()) {
+throw new RegConflictException("error");
+}
+Optional<RoleEntity> optRole = roleRepository.findById(dto.getRole());
+if (!optRole.isPresent()) {
+    throw new UserSearchException("not role");
+}
+AdminRoleItemEntity item = new AdminRoleItemEntity();
+item.setUserId(id);
+item.setRoleId(dto.getRole());
+try {
+roleItemRepository.save(item);
+} catch(DataAccessException e) {
+    System.out.println("500 - internal server error \n "+e.getMessage());
+    throw new DBException("error");
+}
+return info(id);
+}
+
     /**
      * Метод выводит информацию о конкретном пользователе
+     *
      * @param id id пользователя
      * @return выводит OutputUserDto
      * @throws UserSearchException перехвад ошибок
@@ -60,7 +98,7 @@ public class AdminUsersService {
                     if (!roleOpt.isPresent()) {
                         throw new UserSearchException("not role");
                     }
-dto.setTitle(roleOpt.get().getTitle());
+                    dto.setTitle(roleOpt.get().getTitle());
                     return dto;
                 }).toList();
 
