@@ -69,6 +69,7 @@ public class AdminOrderService {
             out.setTotal(item.getTotal());
             out.setQuantity(item.getQuantity());
             out.setProductId(item.getProduct().getId());
+            out.setImgUrl(item.getProduct().getImgUrl());
             l.add(out);
         }
         OutputOrderDataDto data = new OutputOrderDataDto();
@@ -120,7 +121,13 @@ public class AdminOrderService {
      * @return возвращает List<OutputOrderNameAdminDto>
      */
     public List<OutputOrderNameAdminDto> list(String status) {
-        return repository.findByOrderStatusOrderByIdDesc(status).stream()
+        List<OrderEntity> result;
+        if (status.equals("all")) {
+result = repository.findAll();
+        } else {
+            result = repository.findByOrderStatusOrderByIdDesc(status);
+        }
+        return result.stream()
                 .map(entity -> {
                     OutputOrderNameAdminDto dto = new OutputOrderNameAdminDto();
                     dto.setId(entity.getId());

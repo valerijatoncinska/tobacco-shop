@@ -60,6 +60,12 @@ public class AdminOrderController {
 
         return ResponseEntity.ok(service.list("received"));
     }
+    @GetMapping
+    public ResponseEntity<?> ordersAll() {
+
+        return ResponseEntity.ok(service.list("all"));
+    }
+
 
     /**
      * Выводит все отправленные заказы
