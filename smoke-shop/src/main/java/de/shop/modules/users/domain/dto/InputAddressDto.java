@@ -1,8 +1,5 @@
 package de.shop.modules.users.domain.dto;
 
-import de.shop.modules.users.domain.entity.UserEntity;
-import jakarta.persistence.*;
-
 public class InputAddressDto {
     private String name;
     private String street;
@@ -12,12 +9,15 @@ public class InputAddressDto {
     private String region;
     private String email;
     private String phone;
-public void setName(String name) {
-    this.name = name;
-}
-public String getName() {
-    return name;
-}
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public void setStreet(String street) {
         this.street = street;
     }
@@ -57,19 +57,22 @@ public String getName() {
     public String getRegion() {
         return region;
     }
-public void setEmail(String email) {
-        this.email = email;
-}
-public String getEmail() {
-       return email;
-}
-public void setPhone(String phone) {
-        this.phone = phone;
-}
-public String getPhone() {
-        return phone;
-}
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
 
 
 }

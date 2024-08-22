@@ -34,31 +34,35 @@ public class ServerService {
     public String getQueryParameters() {
         return request.getQueryString();
     }
+
     public Optional<String> getParam(String key) {
-return Optional.ofNullable(request.getParameter(key));
+        return Optional.ofNullable(request.getParameter(key));
     }
+
     public String getFullUrl() {
-String protocol = getProtocol();
-String host = getHost();
-String uri = getURI();
-String p = String.valueOf(getPort());
-String port = "";
-if (!p.equals("80")) {
-    port = ":"+p;
-}
-String full = protocol+"://"+host+""+port+""+uri;
-return full;
+        String protocol = getProtocol();
+        String host = getHost();
+        String uri = getURI();
+        String p = String.valueOf(getPort());
+        String port = "";
+        if (!p.equals("80")) {
+            port = ":" + p;
+        }
+        String full = protocol + "://" + host + "" + port + "" + uri;
+        return full;
     }
+
     public String getSite() {
         String protocol = getProtocol();
         String host = getHost();
         String p = String.valueOf(getPort());
         String port = "";
         if (!p.equals("80")) {
-            port = ":"+p;
+            port = ":" + p;
         }
-        return protocol+"://"+host+""+port;
+        return protocol + "://" + host + "" + port;
     }
+
     public String getClientIp() {
         String clientIp = request.getHeader("X-Forwarded-For");
         if (clientIp == null || clientIp.isEmpty()) {
@@ -66,6 +70,7 @@ return full;
         }
         return clientIp;
     }
+
     public String getServerIp() {
         try {
             InetAddress inetAddress = InetAddress.getLocalHost();
@@ -74,7 +79,6 @@ return full;
             return "Unknown";
         }
     }
-
 
 
 }

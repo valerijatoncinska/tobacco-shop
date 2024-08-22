@@ -41,28 +41,36 @@ public class OrderEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
+
     public void setUserEntity(UserEntity user) {
         this.userEntity = user;
     }
+
     public UserEntity getUserEntity() {
         return userEntity;
     }
+
     public Set<OrderItemEntity> getOrderItemEntity() {
         return orderItems;
     }
+
     // Getters and Setters
-public void setEmail(String email) {
-    this.email = email;
-}
-public String getEmail() {
-    return email;
-}
-public void setPhone(String phone) {
-    this.phone = phone;
-}
-public String getPhone() {
-    return phone;
-}
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

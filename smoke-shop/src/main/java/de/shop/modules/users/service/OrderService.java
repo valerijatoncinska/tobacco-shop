@@ -1,32 +1,22 @@
 package de.shop.modules.users.service;
 
-import de.shop.core.exceptions.*;
-import de.shop.modules.product.domain.entity.ProductEntity;
-import de.shop.modules.product.repository.interfaces.ProductRepository;
-import de.shop.modules.users.domain.dto.*;
-import de.shop.modules.users.domain.entity.AddressEntity;
-import de.shop.modules.users.domain.entity.CartItemEntity;
+import de.shop.core.exceptions.OrderNotFoundException;
+import de.shop.modules.users.domain.dto.OutputOrderDataDto;
+import de.shop.modules.users.domain.dto.OutputOrderDto;
+import de.shop.modules.users.domain.dto.OutputOrderItemDto;
+import de.shop.modules.users.domain.dto.OutputOrderNameDto;
 import de.shop.modules.users.domain.entity.OrderEntity;
 import de.shop.modules.users.domain.entity.OrderItemEntity;
 import de.shop.modules.users.jwt.UserObject;
 import de.shop.modules.users.jwt.UserProvider;
-import de.shop.modules.users.repository.interfaces.AddressRepository;
-import de.shop.modules.users.repository.interfaces.CartItemRepository;
 import de.shop.modules.users.repository.interfaces.OrderItemRepository;
 import de.shop.modules.users.repository.interfaces.OrderRepository;
 import de.shop.modules.users.service.mapping.OrderMappingService;
-import jakarta.transaction.Transactional;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {

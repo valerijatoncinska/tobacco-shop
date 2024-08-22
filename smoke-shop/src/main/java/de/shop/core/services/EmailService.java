@@ -11,7 +11,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.engine.ModelBuilderTemplateHandler;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,13 +24,14 @@ import java.util.Properties;
  */
 @Service
 public class EmailService {
-    private JavaMailSender mailSender;
-    private TemplateEngine templateEngine;
-    private LanguageResolver lang;
-    private String template;
-    private String name_app, adresse, contact_email, contact_tel, work_t, send_mode;
-    private DateData date;
-private ServerService server;
+    private JavaMailSender mailSender; // класс для работы с email
+    private TemplateEngine templateEngine; // класс для работы с шаблонами
+    private LanguageResolver lang; // Языковой класс
+    private String template; // Имя шаблона
+    private String name_app, adresse, contact_email, contact_tel, work_t, send_mode; // данные для письма
+    private DateData date; // дата данных
+    private ServerService server; // сервер сервис
+
     public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine, LanguageResolver lang,
                         @Value("${spring.application.name}") String name_app, // имя приложения
                         @Value("${spring.email_service.adresse}") String adresse, // адрес магазина, если есть
@@ -124,7 +124,7 @@ private ServerService server;
         context.setVariable("email", to); // email пользователя
         context.setVariable("work_time", work_time);
         context.setVariable("contact_tel", contact_tel);
-        context.setVariable("domain",server.getSite());
+        context.setVariable("domain", server.getSite());
         if (vars != null) {
             for (Map.Entry<String, String> entry : vars.entrySet()) {
                 context.setVariable(entry.getKey(), entry.getValue());

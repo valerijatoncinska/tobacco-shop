@@ -4,18 +4,13 @@ import de.shop.core.components.LanguageResolver;
 import de.shop.core.components.Validate;
 import de.shop.modules.users.domain.dto.*;
 import de.shop.modules.users.domain.entity.UserEntity;
-import de.shop.modules.users.jwt.CustomDetailsService;
 import de.shop.modules.users.jwt.UserObject;
 import de.shop.modules.users.jwt.UserProvider;
 import de.shop.modules.users.service.AuthorService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -123,7 +118,7 @@ public class AuthorController {
     public ResponseEntity<?> accountActivate(@PathVariable String uuid) {
         return ResponseEntity.ok(service.accountActivate(uuid));
     }
-    
+
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDto> getProfile() {
         try {

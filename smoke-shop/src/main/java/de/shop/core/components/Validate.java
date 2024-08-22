@@ -4,7 +4,6 @@ import de.shop.core.exceptions.ValidateException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,6 +71,14 @@ public class Validate {
         }
     }
 
+    /**
+     * метод возвращает true, если обязательное поле отмечено для дальнейшей работы
+     *
+     * @param b       значение, которое должно придти как boolean значение
+     * @param message сообщение про ошибку
+     * @return возвращает boolean
+     * @throws ValidateException отлов ошибок
+     */
     public boolean checked(boolean b, String message) throws ValidateException {
         if (!b) {
             throw new ValidateException(message);
@@ -130,6 +137,17 @@ public class Validate {
         }
     }
 
+    /**
+     * Метод проверяет диапозон почтового индекса.
+     * Проверка привязана к немецкой системе.
+     * Однако, проверка производится на высокий и низкий порог.
+     * Это не решает проблему с такими индексами как 11111, 22222, 33333 и тд, которые не используются в реальности.
+     *
+     * @param code    строка в которой почтовый индекс. Пример: 55225 или 01057
+     * @param message сообщение о ошибки
+     * @return вернет boolean
+     * @throws ValidateException отлов ошибок
+     */
     public boolean postalCode(String code, String message) throws ValidateException {
         int c = Integer.parseInt(code);
         if (c < 1067 || c > 99998) {

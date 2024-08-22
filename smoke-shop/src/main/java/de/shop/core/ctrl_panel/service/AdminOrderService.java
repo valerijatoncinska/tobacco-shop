@@ -52,16 +52,17 @@ public class AdminOrderService {
      * @throws OrderNotFoundException перехвадчик ошибок
      */
     private OutputOrderDto dataOrder(Long id) throws OrderNotFoundException {
-        UserObject u = provider.getUserObject();
-
+// поиск заказа
         Optional<OrderEntity> o = repository.findById(id);
-        if (!o.isPresent()) {
+        if (!o.isPresent()) { // заказа нет
             throw new OrderNotFoundException("not order");
         }
-        OrderEntity order = o.get();
+        OrderEntity order = o.get(); // получили заказ
+        // Получаем список элементов заказа
         List<OrderItemEntity> orderItemEntity = orderItemRepository.findByOrderEntityIdOrderByIdDesc(order.getId());
-        List<OutputOrderItemDto> l = new ArrayList<>();
+        List<OutputOrderItemDto> l = new ArrayList<>(); // сборщик dto для клиента
         for (OrderItemEntity item : orderItemEntity) {
+            // заполняем данными
             OutputOrderItemDto out = new OutputOrderItemDto();
             out.setId(item.getId());
             out.setTitle(item.getTitle());
@@ -72,6 +73,7 @@ public class AdminOrderService {
             out.setImgUrl(item.getProduct().getImgUrl());
             l.add(out);
         }
+        // Информация о заказе
         OutputOrderDataDto data = new OutputOrderDataDto();
         data.setId(order.getId());
         data.setTotal(order.getTotal());
@@ -82,12 +84,12 @@ public class AdminOrderService {
         data.setPhone(order.getPhone());
         data.setDate(order.getDate());
         data.setPayments(order.getPayments());
-
+// формируем полное представление о заказе
         OutputOrderDto output = new OutputOrderDto();
-        output.setData(data);
-        output.setProducts(l);
+        output.setData(data); // вставили данные о заказе
+        output.setProducts(l); // вставили продукты из заказа
 
-        return output;
+        return output; // вывели результат
     }
 
     /**
@@ -100,18 +102,19 @@ public class AdminOrderService {
      * @throws DBException            перехват ошибок
      */
     public OutputOrderDto status(Long id, String status) throws OrderNotFoundException, DBException {
+        // поиск заказа
         Optional<OrderEntity> opt = repository.findById(id);
         if (!opt.isPresent()) {
             throw new OrderNotFoundException("error");
         }
-        OrderEntity entity = opt.get();
-        entity.setOrderStatus(status);
-        try {
+        OrderEntity entity = opt.get(); // получаем заказ
+        entity.setOrderStatus(status); // изменяем статус
+        try { // сохраняем
             repository.save(entity);
         } catch (DataAccessException e) {
             throw new DBException("ERROR");
         }
-        return dataOrder(entity.getId());
+        return dataOrder(entity.getId()); // отправляем информацию на клиент
     }
 
     /**
@@ -121,12 +124,14 @@ public class AdminOrderService {
      * @return возвращает List<OutputOrderNameAdminDto>
      */
     public List<OutputOrderNameAdminDto> list(String status) {
+        // назначаем переменную
         List<OrderEntity> result;
-        if (status.equals("all")) {
-result = repository.findAll();
-        } else {
+        if (status.equals("all")) { // если статус all, тогда выводим все заказы
+            result = repository.findAll();
+        } else { // если не all, тогда выводим с конкретным статусом
             result = repository.findByOrderStatusOrderByIdDesc(status);
         }
+        // пропускаем через стрим
         return result.stream()
                 .map(entity -> {
                     OutputOrderNameAdminDto dto = new OutputOrderNameAdminDto();

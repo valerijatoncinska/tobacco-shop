@@ -12,14 +12,16 @@ public class OutputProductAdminDto {
     private boolean active;
     private String description;
     private String characteristics;
-private String imgUrl;
+    private String imgUrl;
 
-public void setImgUrl(String imgUrl) {
-    this.imgUrl = imgUrl;
-}
-public String getImgUrl() {
-    return imgUrl;
-}
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
     public Long getId() {
         return id;
     }
@@ -63,10 +65,22 @@ public String getImgUrl() {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
-    public void setQuantity(int quantity) { this.quantity = quantity;}
-    public int getQuantity() { return quantity;}
-    public void setActive(boolean active) { this.active = active;}
-    public boolean getActive() { return active;}
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean getActive() {
+        return active;
+    }
 
     @Override
     public boolean equals(Object o) {

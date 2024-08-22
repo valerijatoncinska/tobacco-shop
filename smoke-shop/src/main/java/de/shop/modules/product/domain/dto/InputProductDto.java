@@ -12,12 +12,14 @@ public class InputProductDto {
     private String characteristics;
     private String imgUrl;
 
-public void setImgUrl(String imgUrl) {
-    this.imgUrl = imgUrl;
-}
-public String getImgUrl() {
-    return imgUrl;
-}
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
     public boolean isActive() {
         return active;
     }

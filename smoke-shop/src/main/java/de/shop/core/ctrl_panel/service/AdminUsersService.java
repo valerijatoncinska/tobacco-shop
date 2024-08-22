@@ -31,42 +31,65 @@ public class AdminUsersService {
         this.roleItemRepository = roleItemRepository;
     }
 
+    /**
+     * Удаление роли у конкретного пользователя
+     *
+     * @param id     id пользователя
+     * @param roleid id связующей записи в user_role
+     * @return возвращает OutputUserDto
+     * @throws DBException         отлов ошибок
+     * @throws UserSearchException отлов ошибок
+     */
     public OutputUserDto dropRole(Long id, Long roleid) throws DBException, UserSearchException {
+        // поиск связующей записи
         Optional<AdminRoleItemEntity> opt = roleItemRepository.findByUserIdAndId(id, roleid);
-        if (!opt.isPresent()) {
+        if (!opt.isPresent()) { // запись не найдена
             throw new UserSearchException("not role");
         }
-        AdminRoleItemEntity item = opt.get();
-try {
-    roleItemRepository.delete(item);
-} catch(DataAccessException e) {
-    System.out.println("500 - internal server error \n "+e.getMessage());
-    throw new DBException("Internal server error");
-}
-return info(id);
+        AdminRoleItemEntity item = opt.get(); // получаем сущность
+        try { // удаляем
+            roleItemRepository.delete(item);
+        } catch (DataAccessException e) {
+            System.out.println("500 - internal server error \n " + e.getMessage());
+            throw new DBException("Internal server error");
+        }
+        return info(id); // отправляем данные в контроллер
     }
-public OutputUserDto addRole(Long id, InputRoleIdDto dto) throws UserSearchException, RegConflictException {
-Optional<AdminRoleItemEntity> opt = roleItemRepository.findByUserIdAndRoleId(id,dto.getRole());
+
+    /**
+     * Добавляем роль
+     *
+     * @param id  id пользователя
+     * @param dto входящий dto
+     * @return возвращает OutputUserDto
+     * @throws UserSearchException  отлов ошибок
+     * @throws RegConflictException отлов ошибок
+     */
+    public OutputUserDto addRole(Long id, InputRoleIdDto dto) throws UserSearchException, RegConflictException {
+        // поиск связующей записи в user_role
+        Optional<AdminRoleItemEntity> opt = roleItemRepository.findByUserIdAndRoleId(id, dto.getRole());
 
 
-if (opt.isPresent()) {
-throw new RegConflictException("error");
-}
-Optional<RoleEntity> optRole = roleRepository.findById(dto.getRole());
-if (!optRole.isPresent()) {
-    throw new UserSearchException("not role");
-}
-AdminRoleItemEntity item = new AdminRoleItemEntity();
-item.setUserId(id);
-item.setRoleId(dto.getRole());
-try {
-roleItemRepository.save(item);
-} catch(DataAccessException e) {
-    System.out.println("500 - internal server error \n "+e.getMessage());
-    throw new DBException("error");
-}
-return info(id);
-}
+        if (opt.isPresent()) { // запись найдена, кидаем ошибку.
+            throw new RegConflictException("error");
+        }
+// поиск роли в базе
+        Optional<RoleEntity> optRole = roleRepository.findById(dto.getRole());
+        if (!optRole.isPresent()) { // роль не найдена
+            throw new UserSearchException("not role");
+        }
+// Заполняем сущность
+        AdminRoleItemEntity item = new AdminRoleItemEntity();
+        item.setUserId(id);
+        item.setRoleId(dto.getRole());
+        try { // Добавляем
+            roleItemRepository.save(item);
+        } catch (DataAccessException e) {
+            System.out.println("500 - internal server error \n " + e.getMessage());
+            throw new DBException("error");
+        }
+        return info(id); // вернули ответ
+    }
 
     /**
      * Метод выводит информацию о конкретном пользователе
@@ -76,8 +99,9 @@ return info(id);
      * @throws UserSearchException перехвад ошибок
      */
     public OutputUserDto info(Long id) throws UserSearchException {
+        // поиск пользователя
         Optional<UserEntity> opt = repository.findById(id); // поиск пользователя
-        if (!opt.isPresent()) {
+        if (!opt.isPresent()) { // пользователь не найден
             throw new UserSearchException("not user");
         }
         UserEntity entity = opt.get(); // получение пользователя
@@ -90,6 +114,7 @@ return info(id);
         data.setIsAdult(entity.getIsAdult());
         data.setSubscribeNews(entity.getSubscribeNews());
         data.setEmailActive(entity.getEmailActive());
+        // собираем роли
         List<OutputRoleDto> l = roleItemRepository.findByUserId(entity.getId()).stream()
                 .map(item -> {
                     OutputRoleDto dto = new OutputRoleDto();
@@ -102,14 +127,20 @@ return info(id);
                     return dto;
                 }).toList();
 
-
+// формируем dto для клиента
         OutputUserDto output = new OutputUserDto();
-        output.setData(data);
-        output.setRoles(l);
-        return output;
+        output.setData(data); // данные о пользователе
+        output.setRoles(l); // роли пользователя
+        return output; // отправляем в контроллер
     }
 
+    /**
+     * Метод, выводит список пользователей
+     *
+     * @return возвращает List<OutputUserPreviewDto>
+     */
     public List<OutputUserPreviewDto> list() {
+        // прогоняем через стрим
         return repository.findAll().stream()
                 .map(user -> {
                     OutputUserPreviewDto out = new OutputUserPreviewDto();

@@ -57,7 +57,6 @@ public class UserEntity implements UserDetails {
     private Set<CartItemEntity> cartItemEntity;
 
 
-
     public void setId(Long id) {
         this.id = id;
     }

@@ -8,17 +8,21 @@ import java.util.List;
 public class OutputOrderDto {
     private OutputOrderDataDto data;
     private List<OutputOrderItemDto> products;
+
     public void setData(OutputOrderDataDto data) {
         this.data = data;
     }
+
     public OutputOrderDataDto getData() {
         return data;
     }
-public void setProducts(List<OutputOrderItemDto> items) {
+
+    public void setProducts(List<OutputOrderItemDto> items) {
         this.products = items;
-}
-public List<OutputOrderItemDto> getProducts() {
+    }
+
+    public List<OutputOrderItemDto> getProducts() {
         return products;
-}
+    }
 
 }

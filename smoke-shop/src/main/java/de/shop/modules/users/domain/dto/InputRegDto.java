@@ -9,7 +9,7 @@ public class InputRegDto {
     private boolean isadult;
     private boolean subscribe_news;
 
-    public InputRegDto(String email, String password,  boolean isadult, boolean subscribe_news) {
+    public InputRegDto(String email, String password, boolean isadult, boolean subscribe_news) {
         this.email = email;
         this.password = password;
         this.isadult = isadult;

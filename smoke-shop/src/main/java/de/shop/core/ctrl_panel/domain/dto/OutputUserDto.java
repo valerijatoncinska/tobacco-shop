@@ -3,7 +3,7 @@ package de.shop.core.ctrl_panel.domain.dto;
 import java.util.List;
 
 /**
- * Класс, который выводит полную информацию о пользователе в админ панели
+ * Класс, который выводит полную информацию о пользователе в админ панели, а так же роли к ним.
  */
 public class OutputUserDto {
     private OutputUserDataDto data;

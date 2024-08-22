@@ -1,7 +1,5 @@
 package de.shop.modules.users.domain.dto;
 
-import java.util.Objects;
-
 /**
  * Класс, который возвращает данные для клиента после успешной регистрации
  */

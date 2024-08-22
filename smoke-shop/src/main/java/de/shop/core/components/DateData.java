@@ -12,16 +12,19 @@ import java.time.format.DateTimeFormatter;
  */
 @Component
 public class DateData {
-    private ZoneId zoneId;
+    private ZoneId zoneId; // класс зон
+
     public DateData(ZoneId zoneId) {
         this.zoneId = zoneId;
     }
+
     /**
      * Метод возвращает отформатированную дату в нужном формате
+     *
      * @param pattern Строковое значение. Пример: dd.MM.yyyy
      * @return возвращает String, в котором будет нужный результат
      */
-    public  String format(String pattern) {
+    public String format(String pattern) {
         LocalDateTime time = LocalDateTime.now(zoneId);
         DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
         return time.format(format);

@@ -12,12 +12,14 @@ import java.time.ZoneId;
 @Configuration
 public class TimeZoneConfig {
     private String idZone; // для id часового пояса
+
     public TimeZoneConfig(@Value("${spring.timezone.id}") String idZone) {
         this.idZone = idZone;
     }
 
     /**
      * Метод возвращает часовой пояс для классов, которые работают с датой и временем
+     *
      * @return возвращает ZoneId
      */
     @Bean

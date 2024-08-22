@@ -17,7 +17,6 @@ import de.shop.modules.users.repository.interfaces.AddressRepository;
 import de.shop.modules.users.repository.interfaces.CartItemRepository;
 import de.shop.modules.users.repository.interfaces.OrderItemRepository;
 import de.shop.modules.users.repository.interfaces.OrderRepository;
-import de.shop.modules.users.service.mapping.CartItemMappingService;
 import de.shop.modules.users.service.mapping.OrderMappingService;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataAccessException;

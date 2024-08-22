@@ -13,18 +13,22 @@ public class OutputOrderDataDto {
     private LocalDateTime date;
     private String email;
     private String phone;
-public void setEmail(String email) {
-    this.email = email;
-}
-public String getEmail() {
-    return email;
-}
-public void setPhone(String phone) {
-    this.phone =  phone;
-}
-public String getPhone() {
-    return phone;
-}
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
 
 
     public OutputOrderDataDto(Long id, String payments, String deliveryAddress, String billingAddress, LocalDateTime date, BigDecimal total, String orderStatus) {
@@ -36,18 +40,23 @@ public String getPhone() {
         this.total = total;
         this.orderStatus = orderStatus;
     }
-public void setTotal(BigDecimal total) {
+
+    public void setTotal(BigDecimal total) {
         this.total = total;
-}
-public BigDecimal getTotal() {
+    }
+
+    public BigDecimal getTotal() {
         return total;
-}
-public void setOrderStatus(String status) {
+    }
+
+    public void setOrderStatus(String status) {
         this.orderStatus = status;
-}
-public String getOrderStatus() {
+    }
+
+    public String getOrderStatus() {
         return orderStatus;
-}
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

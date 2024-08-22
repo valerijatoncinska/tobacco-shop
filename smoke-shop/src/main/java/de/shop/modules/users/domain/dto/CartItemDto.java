@@ -1,8 +1,6 @@
 package de.shop.modules.users.domain.dto;
 
 import de.shop.modules.product.domain.entity.ProductEntity;
-import de.shop.modules.users.domain.entity.UserEntity;
-import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 

@@ -3,10 +3,6 @@ package de.shop.modules.users.domain.entity;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Это сущность роли, проще говоря, прав пользователя
  */
@@ -16,21 +12,23 @@ public class RoleEntity implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-            private Long id;
-            @Column(nullable = false, unique = true)
-            private String title;
+    private Long id;
+    @Column(nullable = false, unique = true)
+    private String title;
 
-            public RoleEntity(String title) {
+    public RoleEntity(String title) {
         this.title = title;
     }
 
     public RoleEntity() {
 
     }
-@Override
-public String getAuthority() {
-                return title;
-}
+
+    @Override
+    public String getAuthority() {
+        return title;
+    }
+
     public String getTitle() {
         return title;
     }

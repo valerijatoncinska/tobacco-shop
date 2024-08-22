@@ -24,10 +24,11 @@ public class JwtUtil {
 
     private final SecretKey accessTokenKey;
     private final SecretKey refreshTokenKey;
-    private  long accessTokenValidity = 1000L * 60 * 60 * 24 * 7;
+    private long accessTokenValidity = 1000L * 60 * 60 * 24 * 7;
     private long refreshTokenValidity = 1000L * 60 * 60 * 24 * 30;
-private LanguageResolver lang;
-private Properties p;
+    private LanguageResolver lang;
+    private Properties p;
+
     public JwtUtil(
             @Value("${token.access}") String accessTokenKeyStr,
             @Value("${token.refresh}") String refreshTokenKeyStr,
@@ -35,7 +36,7 @@ private Properties p;
         this.accessTokenKey = convertToSecretKey(accessTokenKeyStr);
         this.refreshTokenKey = convertToSecretKey(refreshTokenKeyStr);
         this.lang = lang;
-        this.p = lang.load("users","reg");
+        this.p = lang.load("users", "reg");
     }
 
     private SecretKey convertToSecretKey(String keyStr) {

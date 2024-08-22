@@ -1,7 +1,6 @@
 package de.shop.modules.users.domain.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * класс, который выводит позиции продуктов в заказе.
@@ -14,46 +13,60 @@ public class OutputOrderItemDto {
     private int quantity;
     private Long productId;
     private String imgUrl;
+
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
+
     public String getImgUrl() {
         return imgUrl;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public Long getId() {
         return id;
     }
-public void setTitle(String title) {
+
+    public void setTitle(String title) {
         this.title = title;
-}
-public String getTitle() {
+    }
+
+    public String getTitle() {
         return title;
-}
-public void setPrice(BigDecimal price) {
+    }
+
+    public void setPrice(BigDecimal price) {
         this.price = price;
-}
-public BigDecimal getPrice() {
+    }
+
+    public BigDecimal getPrice() {
         return price;
-}
-public void setTotal(BigDecimal total) {
+    }
+
+    public void setTotal(BigDecimal total) {
         this.total = total;
-}
-public  BigDecimal getTotal() {
+    }
+
+    public BigDecimal getTotal() {
         return total;
-}
-public void setProductId(Long id) {
+    }
+
+    public void setProductId(Long id) {
         this.productId = id;
-}
-public Long getProductId() {
+    }
+
+    public Long getProductId() {
         return productId;
-}
-public void setQuantity(int quantity) {
+    }
+
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
-}
-public int getQuantity() {
-return quantity;
-}
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
 }

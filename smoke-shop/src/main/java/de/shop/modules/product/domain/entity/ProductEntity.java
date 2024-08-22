@@ -3,7 +3,6 @@ package de.shop.modules.product.domain.entity;
 
 import de.shop.modules.users.domain.entity.CartItemEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -37,15 +36,17 @@ public class ProductEntity {
 
     @Column(name = "characteristics")
     private String characteristics;
-@Column(name = "img_url")
-private String imgUrl;
+    @Column(name = "img_url")
+    private String imgUrl;
 
-public void setImgUrl(String imgUrl) {
-    this.imgUrl = imgUrl;
-}
-public String getImgUrl() {
-    return imgUrl;
-}
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

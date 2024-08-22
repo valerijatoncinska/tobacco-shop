@@ -75,8 +75,8 @@ public class ProductService {
         ProductEntity product = p.get();
         OutputDto outputDto = new OutputDto();
 //        if (userProvider.role("ROLE_ADMIN")) {
-            OutputProductAdminDto outputProductAdminDto = mappingService.mapEntityToAdminDto(product);
-            outputDto.setData(outputProductAdminDto);
+        OutputProductAdminDto outputProductAdminDto = mappingService.mapEntityToAdminDto(product);
+        outputDto.setData(outputProductAdminDto);
 //        } else {
 //            OutputProductUserDto outputProductUserDto = mappingService.mapEntityToUserDto(product);
 //            outputDto.setData(outputProductUserDto);
@@ -174,7 +174,7 @@ public class ProductService {
         OutputDto o = new OutputDto();
         UserObject u = userProvider.getUserObject();
 //        if (userProvider.role("ROLE_ADMIN")) {
-            o.setData(productsForAdmin());
+        o.setData(productsForAdmin());
 //        } else {
 //            o.setData(productsForUser());
 //        }

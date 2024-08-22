@@ -1,10 +1,8 @@
 package de.shop.modules.users.domain.dto;
 
-import de.shop.modules.users.domain.entity.RoleEntity;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Класс, который возвращает данные для клиента после аутентификации

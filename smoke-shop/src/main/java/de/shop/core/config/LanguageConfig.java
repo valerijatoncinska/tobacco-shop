@@ -53,6 +53,7 @@ public class LanguageConfig {
 
     /**
      * Возвращает Set языков.
+     *
      * @return возвращает Set<String>
      */
     public Set<String> getData() {

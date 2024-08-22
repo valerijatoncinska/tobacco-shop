@@ -30,31 +30,33 @@ public class AddressController {
 
     /**
      * Удаление адреса
-     * @param id  принимает id адреса
+     *
+     * @param id принимает id адреса
      * @return вернет 204 или 404
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> drop(@PathVariable Long id) {
         if (service.drop(id)) {
-return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
     /**
      * Просмотр адреса по id
-     * @param id  адрес id
+     *
+     * @param id адрес id
      * @return Возвращает OutputAddressDto
      */
     @GetMapping("/{id}")
-public ResponseEntity<?> addressInfo(@PathVariable Long id) {
-return ResponseEntity.ok(service.info(id));
-}
+    public ResponseEntity<?> addressInfo(@PathVariable Long id) {
+        return ResponseEntity.ok(service.info(id));
+    }
 
     /**
      * Редактор адреса
+     *
      * @param id  id адреса
      * @param dto Принимает входящий dto
      * @return выводит OutputAddressDto
@@ -72,11 +74,12 @@ return ResponseEntity.ok(service.info(id));
         validate.notBlank(dto.getName(), ((String) p.get("not.blank")).replace("[column]", "name"));
 
 
-        return ResponseEntity.ok(service.update(id,dto));
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     /**
      * Выводит список адресов
+     *
      * @return возвращает List<OutputAddressDto></OutputAddressDto>
      */
     @GetMapping
@@ -86,6 +89,7 @@ return ResponseEntity.ok(service.info(id));
 
     /**
      * Добавляет адрес
+     *
      * @param dto Входящий dto
      * @return возвращает OutputAddressDto
      */
